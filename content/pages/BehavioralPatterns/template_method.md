@@ -72,4 +72,4 @@ class ConcreteClass(AbstractClass):
 
 ---
 
-**Next:** [Chain of Responsibility Pattern](./chain_of_responsibility.html) *(Link TBD)*
+**Next:** [Chain of Responsibility Pattern](./chain_of_responsibility.html) 

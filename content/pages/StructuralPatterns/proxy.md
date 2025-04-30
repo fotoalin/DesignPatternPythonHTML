@@ -128,4 +128,4 @@ image2.display()
 
 ---
 
-**Next:** [Bridge Pattern](./bridge.html) *(Link TBD)*
+**Next:** [Bridge Pattern](./bridge.html) 

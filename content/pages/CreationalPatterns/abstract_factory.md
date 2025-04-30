@@ -185,4 +185,4 @@ app_mac.paint_ui()
 
 ---
 
-**Next:** [Builder Pattern](link-to-builder-pattern.html) *(Link TBD)*
+**Next:** [Builder Pattern](link-to-builder-pattern.html) 

@@ -182,4 +182,4 @@ client_code(PdfApplication())
 
 ---
 
-**Next:** [Abstract Factory Pattern](link-to-abstract-factory.html) *(Link TBD)*
+**Next:** [Abstract Factory Pattern](link-to-abstract-factory.html) 

@@ -58,4 +58,4 @@ class Observer(ABC):
 
 ---
 
-**Next:** [Strategy Pattern](./strategy.html) *(Link TBD)*
+**Next:** [Strategy Pattern](./strategy.html) 

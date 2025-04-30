@@ -71,4 +71,4 @@ class Context:
 
 ---
 
-**Next:** [Template Method Pattern](./template_method.html) *(Link TBD)*
+**Next:** [Template Method Pattern](./template_method.html) 

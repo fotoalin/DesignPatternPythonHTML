@@ -75,4 +75,4 @@ class Caretaker:
 
 ---
 
-**Next:** [Visitor Pattern](./visitor.html) *(Link TBD)*
+**Next:** [Visitor Pattern](./visitor.html) 

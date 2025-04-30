@@ -154,4 +154,4 @@ print(f"\nDecorated 3: {decorated3.render()}")
 
 ---
 
-**Next:** [Facade Pattern](./facade.html) *(Link TBD)*
+**Next:** [Facade Pattern](./facade.html) 

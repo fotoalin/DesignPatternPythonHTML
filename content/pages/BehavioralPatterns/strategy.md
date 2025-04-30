@@ -57,4 +57,4 @@ class ConcreteStrategyA(Strategy):
 
 ---
 
-**Next:** [Command Pattern](./command.html) *(Link TBD)*
+**Next:** [Command Pattern](./command.html) 

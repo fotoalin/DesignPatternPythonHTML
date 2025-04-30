@@ -83,4 +83,4 @@ comp_a.action_a()
 
 ---
 
-**Next:** [Memento Pattern](./memento.html) *(Link TBD)*
+**Next:** [Memento Pattern](./memento.html) 

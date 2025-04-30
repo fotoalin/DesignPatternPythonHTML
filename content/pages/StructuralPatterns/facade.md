@@ -157,4 +157,4 @@ facade.end_movie()
 
 ---
 
-**Next:** [Composite Pattern](./composite.html) *(Link TBD)*
+**Next:** [Composite Pattern](./composite.html) 

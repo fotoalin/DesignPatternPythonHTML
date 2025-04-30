@@ -75,4 +75,4 @@ for req in ['A', 'B', 'C']:
 
 ---
 
-**Next:** [Mediator Pattern](./mediator.html) *(Link TBD)*
+**Next:** [Mediator Pattern](./mediator.html) 

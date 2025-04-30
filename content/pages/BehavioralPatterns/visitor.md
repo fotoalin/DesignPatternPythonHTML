@@ -88,4 +88,4 @@ for elem in elements:
 
 ---
 
-**Next:** [Iterator Pattern](./iterator.html) *(Link TBD)*
+**Next:** [Iterator Pattern](./iterator.html) 

@@ -133,4 +133,4 @@ client_code(modern_logger_instance)
 
 ---
 
-**Next:** [Decorator Pattern](./decorator.html) *(Link TBD)*
+**Next:** [Decorator Pattern](./decorator.html) 

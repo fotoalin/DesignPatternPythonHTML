@@ -181,4 +181,4 @@ logger2.log("An error occurred.")
 
 ---
 
-**Next:** [Factory Pattern](link-to-factory-pattern.html) *(Link TBD)*
+**Next:** [Factory Pattern](link-to-factory-pattern.html) 

@@ -99,4 +99,4 @@ print(char_a is char_a2)  # True
 
 ---
 
-**Next:** [Decorator Pattern](./decorator.html) *(Link TBD)*
+**Next:** [Decorator Pattern](./decorator.html) 

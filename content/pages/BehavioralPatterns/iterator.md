@@ -66,4 +66,4 @@ for item in Iterator(data):
 
 ---
 
-**Next:** [Interpreter Pattern](./interpreter.html) *(Link TBD)*
+**Next:** [Interpreter Pattern](./interpreter.html) 

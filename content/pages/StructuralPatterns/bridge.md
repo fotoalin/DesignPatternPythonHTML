@@ -129,4 +129,4 @@ rectangle.draw()
 
 ---
 
-**Next:** [Flyweight Pattern](./flyweight.html) *(Link TBD)*
+**Next:** [Flyweight Pattern](./flyweight.html) 

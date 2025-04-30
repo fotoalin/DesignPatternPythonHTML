@@ -165,4 +165,4 @@ print(f"Shape 3 (clone): {shape3}") # Unchanged
 
 ---
 
-**Next:** [Adapter Pattern](../StructuralPatterns/adapter.html) *(Link TBD)*
+**Next:** [Adapter Pattern](../StructuralPatterns/adapter.html) 

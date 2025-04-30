@@ -71,4 +71,4 @@ class Invoker:
 
 ---
 
-**Next:** [State Pattern](./state.html) *(Link TBD)*
+**Next:** [State Pattern](./state.html) 
