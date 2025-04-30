@@ -1,0 +1,16 @@
+
+<div class="text-gray-600 text-sm">
+    Published on {{ article.locale_date }} by {{ article.author }}
+    {% if article.category %}
+        in <a href="{{ SITEURL }}/{{ article.category.url }}" class="hover:underline">{{ article.category }}</a>
+    {% endif %}
+    {# Remove automatic tag display #}
+    
+    {% if article.tags %}
+        | Tags: 
+        {% for tag in article.tags %}
+            <a href="{{ SITEURL }}/{{ tag.url }}" class="hover:underline">{{ tag }}</a>{% if not loop.last %}, {% endif %}
+        {% endfor %}
+    {% endif %}
+    
+</div>

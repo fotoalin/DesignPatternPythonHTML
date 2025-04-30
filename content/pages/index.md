@@ -11,7 +11,7 @@ Summary: A step-by-step guide to mastering software design patterns in Python an
 
 ---
 
-Sure! Here's a **simple, clear learning path** to master software design patterns. We’ll go step by step — starting from the basics, learning theory, then building real projects using patterns.
+A simple and clear learning path to master **Software Design Patterns**. We’ll go step by step — starting from the basics, learning theory, then building real projects using patterns.
 
 ---
 

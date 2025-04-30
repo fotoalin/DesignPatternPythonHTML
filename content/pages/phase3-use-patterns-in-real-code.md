@@ -48,6 +48,10 @@ Look at well-established open-source Python and Django projects on GitHub. Try t
 *   Look at frameworks like Flask or FastAPI for different perspectives.
 
 Ask yourself:
+
 *   How does this component handle object creation?
 *   How are different parts of the system connected?
 *   How does the system manage different states or behaviors?
+
+**Next:**
+[Phase 4: Think Like an Architect](phase4-think-like-an-architect.html)
