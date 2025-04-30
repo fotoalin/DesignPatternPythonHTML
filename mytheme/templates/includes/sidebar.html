@@ -1,0 +1,59 @@
+<aside class="w-full md:w-1/4 p-4 bg-gray-100 rounded">
+    <section class="mb-6">
+        <h2 class="text-xl font-semibold mb-3 border-b pb-2">Learning Path</h2>
+        <ul class="list-none space-y-1">
+            <li><a href="{{ SITEURL }}/phase1-get-the-basics-right.html" class="hover:text-blue-600">Phase 1: Basics</a></li>
+            <li><a href="{{ SITEURL }}/phase2-learn-the-patterns-by-category.html" class="hover:text-blue-600">Phase 2: Categories</a></li>
+            <li><a href="{{ SITEURL }}/phase3-use-patterns-in-real-code.html" class="hover:text-blue-600">Phase 3: Practice</a></li>
+            <li><a href="{{ SITEURL }}/phase4-think-like-an-architect.html" class="hover:text-blue-600">Phase 4: Architecture</a></li>
+        </ul>
+    </section>
+
+    {% if DISPLAY_CATEGORIES_ON_SIDEBAR != False %}
+        <section class="mb-6">
+            <h2 class="text-xl font-semibold mb-3 border-b pb-2">Categories</h2>
+            <ul class="list-none space-y-1">
+            {% for cat, null in categories %}
+                <li{% if cat == category %} class="font-bold"{% endif %}>
+                    <a href="{{ SITEURL }}/{{ cat.url }}" class="hover:text-blue-600">{{ cat.name }}</a>
+                </li>
+            {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+
+    {% if DISPLAY_TAGS_ON_SIDEBAR != False and tags %}
+        <section class="mb-6">
+            <h2 class="text-xl font-semibold mb-3 border-b pb-2">Tags</h2>
+            <ul class="flex flex-wrap gap-2">
+            {% for tag, _ in tags|sort(attribute='0') %}
+                <li>
+                    <a href="{{ SITEURL }}/{{ tag.url }}" class="text-sm bg-gray-300 px-2 py-1 rounded hover:bg-gray-400">{{ tag.name }}</a>
+                </li>
+            {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+
+    {% if SOCIAL %}
+        <section class="mb-6">
+            <h2 class="text-xl font-semibold mb-3 border-b pb-2">Social</h2>
+            <ul class="list-none space-y-1">
+            {% for name, url in SOCIAL %}
+                <li><a href="{{ url }}" target="_blank" rel="noopener noreferrer" class="hover:text-blue-600">{{ name }}</a></li>
+            {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+
+    {% if LINKS %}
+        <section>
+            <h2 class="text-xl font-semibold mb-3 border-b pb-2">Links</h2>
+            <ul class="list-none space-y-1">
+            {% for name, url in LINKS %}
+                <li><a href="{{ url }}" target="_blank" rel="noopener noreferrer" class="hover:text-blue-600">{{ name }}</a></li>
+            {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+</aside>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phase 1: Get the Basics Right - Design Patterns in Python</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script> <!-- Add Typography plugin -->
+    <link rel="stylesheet" href="./theme/css/main.css" />
+    <link rel="stylesheet" href="./theme/css/pygments.css" /> <!-- Add Pygments CSS -->
+</head>
+<body>
+<header class="bg-gray-800 text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">
+            <a href="./">Design Patterns in Python</a>
+        </h1>
+        <nav>
+            <ul class="flex space-x-4">
+                    <li><a href="/" class="hover:text-gray-300">Home</a></li>
+                    <li><a href="/about.html" class="hover:text-gray-300">About</a></li>
+                    <li><a href="/contact.html" class="hover:text-gray-300">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+    <div class="container mx-auto p-4 flex flex-col md:flex-row gap-6">
+        <main class="w-full ">
+    <article class="prose lg:prose-xl max-w-none">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold">Phase 1: Get the Basics Right</h1>
+        </header>
+        
+        <div class="entry-content">
+            <hr>
+<h2>🧱 Phase 1: Get the Basics Right (1–2 Weeks)</h2>
+<p>Before diving into specific patterns, it's crucial to understand <em>why</em> we use them and the foundational principles that guide good software design. This phase focuses on building that essential groundwork.</p>
+<h3>What are Design Patterns?</h3>
+<p>In software engineering, a <strong>design pattern</strong> is a general, reusable solution to a commonly occurring problem within a given context in software design. It's not a finished design that can be transformed directly into source or machine code. Rather, it's a description or template for how to solve a problem that can be used in many different situations.</p>
+<p>Think of them like blueprints for software: they provide proven structures and approaches to handle recurring challenges.</p>
+<h3>Why Use Design Patterns?</h3>
+<p>Using design patterns offers several key benefits:</p>
+<ol>
+<li><strong>Proven Solutions:</strong> Patterns represent solutions that have been tested and refined over time by many developers. They help you avoid reinventing the wheel and potential pitfalls.</li>
+<li><strong>Improved Code Readability &amp; Maintainability:</strong> Code built using standard patterns is often easier for other developers (and your future self) to understand, modify, and maintain. Patterns provide a common vocabulary.</li>
+<li><strong>Increased Flexibility &amp; Reusability:</strong> Patterns often promote loose coupling between components, making the system more flexible and allowing parts to be reused more easily.</li>
+<li><strong>Faster Development:</strong> Having a toolkit of patterns can speed up the development process as you can quickly identify and implement appropriate solutions for common problems.</li>
+</ol>
+<h3>Learn SOLID Principles</h3>
+<p>SOLID is an acronym representing five fundamental principles of object-oriented design, introduced by Robert C. Martin ("Uncle Bob"). Adhering to these principles helps create systems that are easier to maintain, scale, and understand.</p>
+<ol>
+<li>
+<p><strong>S – Single Responsibility Principle (SRP):</strong></p>
+<ul>
+<li><em>Idea:</em> A class should have only one reason to change.</li>
+<li><em>Meaning:</em> Each class should focus on a single, well-defined task or responsibility. This makes classes smaller, more focused, and easier to test and modify without affecting unrelated functionality.</li>
+</ul>
+</li>
+<li>
+<p><strong>O – Open/Closed Principle (OCP):</strong></p>
+<ul>
+<li><em>Idea:</em> Software entities (classes, modules, functions) should be open for extension but closed for modification.</li>
+<li><em>Meaning:</em> You should be able to add new functionality without changing existing code. This is often achieved through inheritance or interfaces/abstraction.</li>
+</ul>
+</li>
+<li>
+<p><strong>L – Liskov Substitution Principle (LSP):</strong></p>
+<ul>
+<li><em>Idea:</em> Subtypes must be substitutable for their base types.</li>
+<li><em>Meaning:</em> If you have a class <code>B</code> that is a subclass of <code>A</code>, you should be able to use an object of type <code>B</code> anywhere you could use an object of type <code>A</code> without breaking the program's correctness. This ensures that inheritance hierarchies are well-designed.</li>
+</ul>
+</li>
+<li>
+<p><strong>I – Interface Segregation Principle (ISP):</strong></p>
+<ul>
+<li><em>Idea:</em> Clients should not be forced to depend on interfaces they do not use.</li>
+<li><em>Meaning:</em> It's better to have many small, specific interfaces than one large, general-purpose interface. This prevents classes from having to implement methods they don't need.</li>
+</ul>
+</li>
+<li>
+<p><strong>D – Dependency Inversion Principle (DIP):</strong></p>
+<ul>
+<li><em>Idea:</em> High-level modules should not depend on low-level modules. Both should depend on abstractions. Abstractions should not depend on details. Details should depend on abstractions.</li>
+<li><em>Meaning:</em> Instead of directly depending on concrete classes, components should depend on interfaces or abstract classes. This decouples the components and makes the system more flexible, often facilitated by Dependency Injection.</li>
+</ul>
+</li>
+</ol>
+<p>Understanding and applying SOLID principles is a crucial first step before effectively utilizing design patterns. They provide the foundation for writing clean, robust, and maintainable object-oriented code.</p>
+<hr>
+<p><strong>Next:</strong> 
+<a href="phase2-learn-the-patterns-by-category.html">Phase 2: Learn the Patterns by Category</a></p>
+        </div>
+    </article>
+        </main>
+        
+    </div>
+
+<footer class="bg-gray-200 text-gray-700 p-4 mt-8">
+    <div class="container mx-auto text-center">
+        <p>&copy; Design Patterns in Python <span id="current-year"></span>. Powered by <a href="https://getpelican.com/" class="underline hover:text-gray-900">Pelican</a>.</p>
+    </div>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</footer>
+</body>
+</html>

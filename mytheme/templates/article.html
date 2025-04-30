@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article.title|striptags }} - {{ SITENAME }}{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    {% if article.description %}
+        <meta name="description" content="{{ article.description }}" />
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <article class="prose lg:prose-xl max-w-none">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold mb-2">{{ article.title }}</h1>
+            <div class="text-gray-600 text-sm">
+                Published on {{ article.locale_date }} by {{ article.author }}
+                {% if article.category %}
+                    in <a href="{{ SITEURL }}/{{ article.category.url }}" class="hover:underline">{{ article.category }}</a>
+                {% endif %}
+                {% if article.tags %}
+                    | Tags: 
+                    {% for tag in article.tags %}
+                        <a href="{{ SITEURL }}/{{ tag.url }}" class="hover:underline">{{ tag }}</a>{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </header>
+        
+        <div class="entry-content">
+            {{ article.content }}
+        </div>
+
+        {% if DISQUS_SITENAME and article.status != 'draft' %}
+            <div class="mt-12">
+                <h2 class="text-2xl font-semibold mb-4">Comments</h2>
+                <div id="disqus_thread"></div>
+                <script type="text/javascript">
+                    var disqus_shortname = '{{ DISQUS_SITENAME }}';
+                    var disqus_identifier = '{{ article.url }}';
+                    var disqus_title = '{{ article.title|striptags|e }}';
+                    var disqus_url = '{{ SITEURL }}/{{ article.url }}';
+                    (function() {
+                        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                    })();
+                </script>
+                <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </div>
+        {% endif %}
+    </article>
+{% endblock %}

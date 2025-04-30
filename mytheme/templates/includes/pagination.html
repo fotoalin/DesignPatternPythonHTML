@@ -1,0 +1,29 @@
+{% if articles_page.has_previous() or articles_page.has_next() %}
+<nav class="flex justify-between items-center mt-8 border-t pt-4">
+    <div>
+        {% if articles_page.has_previous() %}
+            <a href="{{ SITEURL }}/{{ articles_previous_page.url }}" class="inline-block bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l">
+                &larr; Newer Posts
+            </a>
+        {% else %}
+            <span class="inline-block bg-gray-200 text-gray-500 font-bold py-2 px-4 rounded-l cursor-not-allowed">
+                &larr; Newer Posts
+            </span>
+        {% endif %}
+    </div>
+    <div class="text-gray-600">
+        Page {{ articles_page.number }} of {{ articles_paginator.num_pages }}
+    </div>
+    <div>
+        {% if articles_page.has_next() %}
+            <a href="{{ SITEURL }}/{{ articles_next_page.url }}" class="inline-block bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r">
+                Older Posts &rarr;
+            </a>
+        {% else %}
+            <span class="inline-block bg-gray-200 text-gray-500 font-bold py-2 px-4 rounded-r cursor-not-allowed">
+                Older Posts &rarr;
+            </span>
+        {% endif %}
+    </div>
+</nav>
+{% endif %}

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phase 4: Think Like an Architect - Design Patterns in Python</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script> <!-- Add Typography plugin -->
+    <link rel="stylesheet" href="./theme/css/main.css" />
+    <link rel="stylesheet" href="./theme/css/pygments.css" /> <!-- Add Pygments CSS -->
+</head>
+<body>
+<header class="bg-gray-800 text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">
+            <a href="./">Design Patterns in Python</a>
+        </h1>
+        <nav>
+            <ul class="flex space-x-4">
+                    <li><a href="/" class="hover:text-gray-300">Home</a></li>
+                    <li><a href="/about.html" class="hover:text-gray-300">About</a></li>
+                    <li><a href="/contact.html" class="hover:text-gray-300">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+    <div class="container mx-auto p-4 flex flex-col md:flex-row gap-6">
+        <main class="w-full ">
+    <article class="prose lg:prose-xl max-w-none">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold">Phase 4: Think Like an Architect</h1>
+        </header>
+        
+        <div class="entry-content">
+            <hr>
+<h2>🏛️ Phase 4: Think Like an Architect (Ongoing)</h2>
+<p>Mastering design patterns isn't just about knowing the catalog; it's about developing the intuition to apply them effectively and strategically. This ongoing phase focuses on higher-level thinking, recognizing when and <em>why</em> to use a pattern, and understanding the broader context of software architecture.</p>
+<h3>Choosing the Right Pattern</h3>
+<p>This is often the hardest part. Don't force patterns where they aren't needed. Consider:</p>
+<ul>
+<li><strong>The Problem:</strong> What specific issue are you trying to solve? Does it match the intent of a known pattern?</li>
+<li><strong>The Context:</strong> What are the constraints of your system (e.g., performance needs, team size, existing codebase)?</li>
+<li><strong>The Consequences:</strong> What are the trade-offs? Using a pattern might add complexity. Is the flexibility gained worth the cost?</li>
+<li><strong>Simplicity First:</strong> Often, a simpler solution without a formal pattern is better. Apply patterns when the complexity they manage is actually present.</li>
+</ul>
+<h3>Refactoring Towards Patterns</h3>
+<p>You don't always need to start with a pattern. Sometimes, the need for a pattern emerges as the code evolves.</p>
+<ul>
+<li><strong>Identify Code Smells:</strong> Look for signs of design problems (e.g., duplicated code, long methods, large classes, tight coupling).</li>
+<li><strong>Incremental Changes:</strong> Introduce patterns gradually through refactoring. For example, you might extract a method (simple refactoring) before realizing it fits the <strong>Strategy</strong> pattern.</li>
+<li><strong>Use Your Tools:</strong> Automated refactoring tools in IDEs can help, but always understand the changes being made.</li>
+</ul>
+<h3>Understanding Anti-Patterns</h3>
+<p>Just as important as knowing good patterns is recognizing common bad practices, or <strong>anti-patterns</strong>. These are common "solutions" that seem like a good idea but often lead to problems.</p>
+<ul>
+<li><strong>Examples:</strong> God Object (a class that knows or does too much), Lava Flow (dead code that's too risky to remove), Spaghetti Code (code with complex and tangled control structure).</li>
+<li><strong>Learning:</strong> Recognizing anti-patterns helps you avoid them and identify areas in existing code that need refactoring.</li>
+</ul>
+<h3>Combining Patterns</h3>
+<p>Real-world solutions often involve combining multiple patterns. For example:</p>
+<ul>
+<li><strong>Factory Method</strong> might be used within a <strong>Strategy</strong> to create different strategy objects.</li>
+<li><strong>Composite</strong> and <strong>Observer</strong> can work together to manage complex UI hierarchies.</li>
+<li><strong>Facade</strong> can provide a simple interface to a subsystem built using several other patterns.</li>
+</ul>
+<h3>Continuous Learning &amp; Practice</h3>
+<p>Software design is a skill that requires constant refinement.</p>
+<ul>
+<li><strong>Read Code:</strong> Continue analyzing open-source projects.</li>
+<li><strong>Read Books/Blogs:</strong> Stay updated on architectural trends and discussions.</li>
+<li><strong>Discuss with Peers:</strong> Talk about design decisions with other developers.</li>
+<li><strong>Experiment:</strong> Try different approaches in side projects.</li>
+<li><strong>Reflect:</strong> After completing a feature or project, review your design choices. What worked well? What would you do differently?</li>
+</ul>
+<p>Thinking like an architect means making conscious, informed decisions about the structure and design of your software, always considering the long-term health and maintainability of the codebase.</p>
+<hr>
+<p><strong>This marks the end of the structured learning path, but the beginning of lifelong practice!</strong></p>
+        </div>
+    </article>
+        </main>
+        
+    </div>
+
+<footer class="bg-gray-200 text-gray-700 p-4 mt-8">
+    <div class="container mx-auto text-center">
+        <p>&copy; Design Patterns in Python <span id="current-year"></span>. Powered by <a href="https://getpelican.com/" class="underline hover:text-gray-900">Pelican</a>.</p>
+    </div>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</footer>
+</body>
+</html>

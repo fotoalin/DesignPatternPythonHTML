@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{{ SITENAME }}{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script> <!-- Add Typography plugin -->
+    <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/main.css" />
+    <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/pygments.css" /> <!-- Add Pygments CSS -->
+    {% if FEED_ALL_ATOM %}
+    <link href="{{ FEED_DOMAIN }}/{% if FEED_ALL_ATOM_URL %}{{ FEED_ALL_ATOM_URL }}{% else %}{{ FEED_ALL_ATOM }}{% endif %}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }} Atom Feed" />
+    {% endif %}
+    {% if FEED_ALL_RSS %}
+    <link href="{{ FEED_DOMAIN }}/{% if FEED_ALL_RSS_URL %}{{ FEED_ALL_RSS_URL }}{% else %}{{ FEED_ALL_RSS }}{% endif %}" type="application/rss+xml" rel="alternate" title="{{ SITENAME }} RSS Feed" />
+    {% endif %}
+    {% block head %}{% endblock %}
+</head>
+<body>
+    {% include 'includes/header.html' %}
+
+    <div class="container mx-auto p-4 flex flex-col md:flex-row gap-6">
+        {# Adjust main width based on whether the sidebar is shown - Use 'Index' #}
+        <main class="w-full {% if page and page.slug == 'Index' %}md:w-3/4{% endif %}">
+            {% block content %}
+            {% endblock %}
+        </main>
+        
+        {# Conditionally include sidebar only for the index page - Use 'Index' #}
+        {% if page and page.slug == 'Index' %}
+            {% block sidebar %}
+                {% include 'includes/sidebar.html' %}
+            {% endblock %}
+        {% endif %}
+    </div>
+
+    {% include 'includes/footer.html' %}
+
+    {% block body_scripts %}{% endblock %}
+</body>
+</html>
