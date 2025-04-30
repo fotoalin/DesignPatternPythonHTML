@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Factory Pattern (Factory Method & Simple Factory) - Design Patterns in Python</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script> <!-- Add Typography plugin -->
+    <link rel="stylesheet" href="../theme/css/main.css" />
+    <link rel="stylesheet" href="../theme/css/pygments.css" /> <!-- Add Pygments CSS -->
+</head>
+<body>
+<header class="bg-gray-800 text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">
+            <a href="../">Design Patterns in Python</a>
+        </h1>
+        <nav>
+            <ul class="flex space-x-4">
+                    <li><a href="/" class="hover:text-gray-300">Home</a></li>
+                    <li><a href="/about.html" class="hover:text-gray-300">About</a></li>
+                    <li><a href="/contact.html" class="hover:text-gray-300">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+    <div class="container mx-auto p-4 flex flex-col md:flex-row gap-6">
+        <main class="w-full ">
+    <article class="prose lg:prose-xl max-w-none">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold">Factory Pattern (Factory Method & Simple Factory)</h1>
+        </header>
+        
+        <div class="entry-content">
+            <hr>
+<h2>Factory Pattern (Factory Method &amp; Simple Factory)</h2>
+<p><strong>Type:</strong> Creational</p>
+<p>Often, "Factory Pattern" can refer to two related but distinct patterns: <strong>Simple Factory</strong> (which isn't one of the original GoF patterns but is very common) and <strong>Factory Method</strong> (which is a GoF pattern).</p>
+<h3>Intent</h3>
+<ul>
+<li><strong>Simple Factory:</strong> Encapsulate object creation logic in one place, simplifying the client code.</li>
+<li><strong>Factory Method:</strong> Define an interface for creating an object, but let subclasses decide which class to instantiate. Factory Method lets a class defer instantiation to subclasses.</li>
+</ul>
+<h3>Problem</h3>
+<p>Imagine you have code that needs to create different types of objects based on some condition (e.g., user input, configuration). Directly using constructors (<code>MyClass(...)</code>) throughout your client code can lead to problems:</p>
+<ul>
+<li><strong>Tight Coupling:</strong> The client code becomes tightly coupled to the concrete classes it instantiates. If you add a new class or change an existing one, you have to find and modify all the places where it's created.</li>
+<li><strong>Violates Open/Closed Principle:</strong> Adding new types of objects requires modifying the client code's creation logic.</li>
+<li><strong>Complex Client Code:</strong> The client code gets cluttered with <code>if/elif/else</code> or <code>switch</code> statements for object creation.</li>
+</ul>
+<h3>Solution</h3>
+<h4>1. Simple Factory</h4>
+<p>A Simple Factory is often just a class or function that encapsulates the logic for selecting and creating objects of different types based on input parameters. It centralizes the creation logic.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+
+<span class="c1"># Product Interface (Optional but good practice)</span>
+<span class="k">class</span> <span class="nc">Document</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="c1"># Concrete Products</span>
+<span class="k">class</span> <span class="nc">TextDocument</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Displaying text document...&quot;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">PdfDocument</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Displaying PDF document...&quot;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">SpreadsheetDocument</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Displaying spreadsheet document...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Simple Factory</span>
+<span class="k">class</span> <span class="nc">DocumentFactory</span><span class="p">:</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_document</span><span class="p">(</span><span class="n">doc_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Document</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a document object based on the type.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">doc_type</span> <span class="o">==</span> <span class="s1">&#39;text&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">TextDocument</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">doc_type</span> <span class="o">==</span> <span class="s1">&#39;pdf&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PdfDocument</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">doc_type</span> <span class="o">==</span> <span class="s1">&#39;spreadsheet&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">SpreadsheetDocument</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown document type: </span><span class="si">{</span><span class="n">doc_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Client Code</span>
+<span class="n">doc_type</span> <span class="o">=</span> <span class="s2">&quot;pdf&quot;</span> <span class="c1"># Could come from config, user input, etc.</span>
+<span class="n">document</span> <span class="o">=</span> <span class="n">DocumentFactory</span><span class="o">.</span><span class="n">create_document</span><span class="p">(</span><span class="n">doc_type</span><span class="p">)</span>
+<span class="n">document</span><span class="o">.</span><span class="n">display</span><span class="p">()</span> <span class="c1"># Output: Displaying PDF document...</span>
+
+<span class="n">doc_type</span> <span class="o">=</span> <span class="s2">&quot;text&quot;</span>
+<span class="n">document</span> <span class="o">=</span> <span class="n">DocumentFactory</span><span class="o">.</span><span class="n">create_document</span><span class="p">(</span><span class="n">doc_type</span><span class="p">)</span>
+<span class="n">document</span><span class="o">.</span><span class="n">display</span><span class="p">()</span> <span class="c1"># Output: Displaying text document...</span>
+</code></pre></div>
+
+<p><em>Explanation:</em> The client code (<code>DocumentFactory.create_document(...)</code>) doesn't need to know about <code>TextDocument</code> or <code>PdfDocument</code>. It just asks the factory for a document of a certain type. All the creation logic is hidden inside the factory.</p>
+<h4>2. Factory Method</h4>
+<p>The Factory Method pattern uses inheritance. A base class (Creator) declares an abstract <code>factory_method</code> that subclasses must implement to create specific product objects. The Creator class often has methods that work with the product created by the factory method, unaware of the concrete product type.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+
+<span class="c1"># --- Product Interface and Concrete Products (same as Simple Factory example) ---</span>
+<span class="k">class</span> <span class="nc">Document</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">TextDocument</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Displaying text document...&quot;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">PdfDocument</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Displaying PDF document...&quot;</span><span class="p">)</span>
+
+<span class="c1"># --- Creator Abstract Class ---</span>
+<span class="k">class</span> <span class="nc">Application</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The Creator class declares the factory method.&quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">factory_method</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Document</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Subclasses will override this to create specific documents.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">open_document</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Core logic that uses the product created by the factory method.&quot;&quot;&quot;</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory_method</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Application: Using the created document.&quot;</span><span class="p">)</span>
+        <span class="n">doc</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+
+<span class="c1"># --- Concrete Creators ---</span>
+<span class="k">class</span> <span class="nc">TextApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Concrete Creator for text documents.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">factory_method</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Document</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;TextApplication: Creating a TextDocument.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">TextDocument</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">PdfApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Concrete Creator for PDF documents.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">factory_method</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Document</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PdfApplication: Creating a PdfDocument.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">PdfDocument</span><span class="p">()</span>
+
+<span class="c1"># Client Code</span>
+<span class="k">def</span> <span class="nf">client_code</span><span class="p">(</span><span class="n">creator</span><span class="p">:</span> <span class="n">Application</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The client code works with an instance of a concrete creator,</span>
+<span class="sd">       albeit through its base interface. As long as the client keeps</span>
+<span class="sd">       working with the creator via the base interface, you can pass it</span>
+<span class="sd">       any creator&#39;s subclass.&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Client: I&#39;m not aware of the creator&#39;s concrete class, but it works.&quot;</span><span class="p">)</span>
+    <span class="n">creator</span><span class="o">.</span><span class="n">open_document</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;App: Launched with the TextApplication.&quot;</span><span class="p">)</span>
+<span class="n">client_code</span><span class="p">(</span><span class="n">TextApplication</span><span class="p">())</span>
+<span class="c1"># Output:</span>
+<span class="c1"># App: Launched with the TextApplication.</span>
+<span class="c1"># Client: I&#39;m not aware of the creator&#39;s concrete class, but it works.</span>
+<span class="c1"># TextApplication: Creating a TextDocument.</span>
+<span class="c1"># Application: Using the created document.</span>
+<span class="c1"># Displaying text document...</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">App: Launched with the PdfApplication.&quot;</span><span class="p">)</span>
+<span class="n">client_code</span><span class="p">(</span><span class="n">PdfApplication</span><span class="p">())</span>
+<span class="c1"># Output:</span>
+<span class="c1"># App: Launched with the PdfApplication.</span>
+<span class="c1"># Client: I&#39;m not aware of the creator&#39;s concrete class, but it works.</span>
+<span class="c1"># PdfApplication: Creating a PdfDocument.</span>
+<span class="c1"># Application: Using the created document.</span>
+<span class="c1"># Displaying PDF document...</span>
+</code></pre></div>
+
+<p><em>Explanation:</em> The <code>Application</code> class defines the structure (<code>open_document</code>) but delegates the actual object creation to its subclasses (<code>TextApplication</code>, <code>PdfApplication</code>) via the <code>factory_method</code>. The client code interacts with the <code>Application</code> interface, decoupling it from the concrete document types.</p>
+<h3>Pros</h3>
+<ul>
+<li><strong>Decoupling:</strong> Reduces coupling between client code and concrete product classes.</li>
+<li><strong>Single Responsibility Principle:</strong> Moves creation logic out of the client code (Simple Factory) or into dedicated subclasses (Factory Method).</li>
+<li><strong>Open/Closed Principle:</strong> Allows introducing new product types without modifying client code (Simple Factory requires modifying the factory; Factory Method requires adding a new Creator subclass).</li>
+<li><strong>Flexibility (Factory Method):</strong> Gives subclasses control over object creation.</li>
+</ul>
+<h3>Cons</h3>
+<ul>
+<li><strong>Increased Complexity:</strong> Introduces more classes/functions (factories or creator hierarchies).</li>
+<li><strong>Simple Factory Limitation:</strong> If adding new product types, the factory itself needs modification (violating OCP for the factory).</li>
+<li><strong>Factory Method Hierarchy:</strong> Can lead to a parallel hierarchy of Creator classes alongside Product classes.</li>
+</ul>
+<h3>When to Use</h3>
+<ul>
+<li><strong>Simple Factory:</strong> When you have a relatively simple creation process with a limited number of types, and you want to centralize creation logic away from the client.</li>
+<li><strong>Factory Method:</strong><ul>
+<li>When a class can't anticipate the class of objects it must create.</li>
+<li>When a class wants its subclasses to specify the objects it creates.</li>
+<li>When you want to localize the knowledge of which helper subclass is the delegate.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>Next:</strong> <a href="link-to-abstract-factory.html">Abstract Factory Pattern</a> <em>(Link TBD)</em></p>
+        </div>
+    </article>
+        </main>
+        
+    </div>
+
+<footer class="bg-gray-200 text-gray-700 p-4 mt-8">
+    <div class="container mx-auto text-center">
+        <p>&copy; Design Patterns in Python <span id="current-year"></span>. Powered by <a href="https://getpelican.com/" class="underline hover:text-gray-900">Pelican</a>.</p>
+    </div>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</footer>
+</body>
+</html>

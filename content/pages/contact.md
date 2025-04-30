@@ -13,12 +13,13 @@ Summary: How to get in touch.
 
 If you have any questions, suggestions, or just want to say hello, feel free to reach out.
 
-* **Email:** [your-email@example.com](mailto:your-email@example.com)
-* **GitHub:** [Link to your GitHub profile](https://github.com/your-username)
-
-Alternatively, you can fill out the form below:
+* **Email:** [fotoalin@yahoo.com](mailto:fotoalin@yahoo.com)
+* **GitHub:** [https://github.com/fotoalin](https://github.com/fotoalin)
 
 <!-- Placeholder for a contact form if you plan to add one -->
+<!-- 
+Alternatively, you can fill out the form below:
+
 <form action="#" method="post">
     <label for="name">Name:</label><br>
     <input type="text" id="name" name="name"><br>
@@ -27,5 +28,6 @@ Alternatively, you can fill out the form below:
     <label for="message">Message:</label><br>
     <textarea id="message" name="message" rows="4" cols="50"></textarea><br><br>
     <input type="submit" value="Send Message">
-</form>
+</form> 
+-->
 

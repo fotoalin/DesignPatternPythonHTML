@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Composite Pattern - Design Patterns in Python</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script> <!-- Add Typography plugin -->
+    <link rel="stylesheet" href="../theme/css/main.css" />
+    <link rel="stylesheet" href="../theme/css/pygments.css" /> <!-- Add Pygments CSS -->
+</head>
+<body>
+<header class="bg-gray-800 text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">
+            <a href="../">Design Patterns in Python</a>
+        </h1>
+        <nav>
+            <ul class="flex space-x-4">
+                    <li><a href="/" class="hover:text-gray-300">Home</a></li>
+                    <li><a href="/about.html" class="hover:text-gray-300">About</a></li>
+                    <li><a href="/contact.html" class="hover:text-gray-300">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+    <div class="container mx-auto p-4 flex flex-col md:flex-row gap-6">
+        <main class="w-full ">
+    <article class="prose lg:prose-xl max-w-none">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold">Composite Pattern</h1>
+        </header>
+        
+        <div class="entry-content">
+            <hr>
+<h2>Composite Pattern</h2>
+<p><strong>Type:</strong> Structural</p>
+<h3>Intent</h3>
+<p>Compose objects into <strong>tree structures</strong> to represent <strong>part-whole hierarchies</strong>. Composite lets clients treat individual objects and compositions of objects <strong>uniformly</strong>.</p>
+<h3>Problem</h3>
+<p>Imagine you are building a file system explorer. A file system consists of files and directories. Directories can contain files or other directories, forming a tree structure. You want to:</p>
+<ul>
+<li>Represent both files and directories in a uniform way.</li>
+<li>Allow clients to interact with individual files and directories in the same manner (e.g., <code>get_size()</code> or <code>display()</code>).</li>
+<li>Avoid duplicating code for handling files and directories.</li>
+</ul>
+<h3>Solution</h3>
+<p>The Composite pattern models the tree structure with <strong>components</strong>:</p>
+<ol>
+<li><strong>Component Interface:</strong> Declares common operations for both simple (leaf) and complex (composite) objects.</li>
+<li><strong>Leaf:</strong> Represents simple objects (e.g., files). Implements the Component interface.</li>
+<li><strong>Composite:</strong> Represents complex objects (e.g., directories). Implements the Component interface and stores child components (both leaves and composites).</li>
+<li><strong>Client:</strong> Interacts with components through the Component interface, treating leaves and composites uniformly.</li>
+</ol>
+<h3>Python Implementation Example</h3>
+<p>Let's model a file system with files and directories.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="c1"># --- Component Interface ---</span>
+<span class="k">class</span> <span class="nc">FileSystemComponent</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="c1"># --- Leaf ---</span>
+<span class="k">class</span> <span class="nc">File</span><span class="p">(</span><span class="n">FileSystemComponent</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">size</span>
+
+    <span class="k">def</span> <span class="nf">get_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
+
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="n">indent</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;File: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="si">}</span><span class="s2"> KB)&quot;</span><span class="p">)</span>
+
+<span class="c1"># --- Composite ---</span>
+<span class="k">class</span> <span class="nc">Directory</span><span class="p">(</span><span class="n">FileSystemComponent</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FileSystemComponent</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">:</span> <span class="n">FileSystemComponent</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">:</span> <span class="n">FileSystemComponent</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="n">indent</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;Directory: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="p">:</span>
+            <span class="n">child</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">indent</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># --- Client Code ---</span>
+
+<span class="c1"># Create files</span>
+<span class="n">file1</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="s2">&quot;file1.txt&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">file2</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="s2">&quot;file2.txt&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">file3</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="s2">&quot;file3.txt&quot;</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+
+<span class="c1"># Create directories</span>
+<span class="n">root</span> <span class="o">=</span> <span class="n">Directory</span><span class="p">(</span><span class="s2">&quot;root&quot;</span><span class="p">)</span>
+<span class="n">sub_dir1</span> <span class="o">=</span> <span class="n">Directory</span><span class="p">(</span><span class="s2">&quot;sub_dir1&quot;</span><span class="p">)</span>
+<span class="n">sub_dir2</span> <span class="o">=</span> <span class="n">Directory</span><span class="p">(</span><span class="s2">&quot;sub_dir2&quot;</span><span class="p">)</span>
+
+<span class="c1"># Build the tree structure</span>
+<span class="n">root</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">file1</span><span class="p">)</span>
+<span class="n">root</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sub_dir1</span><span class="p">)</span>
+<span class="n">sub_dir1</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">file2</span><span class="p">)</span>
+<span class="n">sub_dir1</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sub_dir2</span><span class="p">)</span>
+<span class="n">sub_dir2</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">file3</span><span class="p">)</span>
+
+<span class="c1"># Client interacts with the tree</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File System Structure:&quot;</span><span class="p">)</span>
+<span class="n">root</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Total Size:&quot;</span><span class="p">,</span> <span class="n">root</span><span class="o">.</span><span class="n">get_size</span><span class="p">(),</span> <span class="s2">&quot;KB&quot;</span><span class="p">)</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># File System Structure:</span>
+<span class="c1"># Directory: root</span>
+<span class="c1">#   File: file1.txt (10 KB)</span>
+<span class="c1">#   Directory: sub_dir1</span>
+<span class="c1">#     File: file2.txt (20 KB)</span>
+<span class="c1">#     Directory: sub_dir2</span>
+<span class="c1">#       File: file3.txt (30 KB)</span>
+<span class="c1">#</span>
+<span class="c1"># Total Size: 60 KB</span>
+</code></pre></div>
+
+<p><em>Explanation:</em> The <code>FileSystemComponent</code> interface declares <code>get_size()</code> and <code>display()</code> methods. <code>File</code> is a leaf that implements these methods directly. <code>Directory</code> is a composite that stores child components (both files and directories) and delegates operations to them. The client interacts with the <code>root</code> directory, treating it as a single object, even though it contains a tree of files and directories.</p>
+<h3>Pros</h3>
+<ul>
+<li><strong>Uniformity:</strong> Treat individual objects and compositions uniformly.</li>
+<li><strong>Extensibility:</strong> New types of components (e.g., symbolic links) can be added without changing existing code.</li>
+<li><strong>Simplifies Client Code:</strong> The client doesn't need to distinguish between simple and complex components.</li>
+</ul>
+<h3>Cons</h3>
+<ul>
+<li><strong>Overhead:</strong> Managing the tree structure can add complexity and overhead, especially for large hierarchies.</li>
+<li><strong>Inappropriate for Flat Structures:</strong> If the structure is flat (e.g., no nesting), the Composite pattern might be overkill.</li>
+</ul>
+<h3>When to Use</h3>
+<ul>
+<li>When you need to represent part-whole hierarchies of objects.</li>
+<li>When you want clients to treat individual objects and compositions uniformly.</li>
+<li>When you want to simplify client code by hiding the complexity of the tree structure.</li>
+</ul>
+<hr>
+<p><strong>Next:</strong> <a href="./proxy.html">Proxy Pattern</a></p>
+        </div>
+    </article>
+        </main>
+        
+    </div>
+
+<footer class="bg-gray-200 text-gray-700 p-4 mt-8">
+    <div class="container mx-auto text-center">
+        <p>&copy; Design Patterns in Python <span id="current-year"></span>. Powered by <a href="https://getpelican.com/" class="underline hover:text-gray-900">Pelican</a>.</p>
+    </div>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</footer>
+</body>
+</html>

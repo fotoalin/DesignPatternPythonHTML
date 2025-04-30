@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Singleton Pattern - Design Patterns in Python</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script> <!-- Add Typography plugin -->
+    <link rel="stylesheet" href="../theme/css/main.css" />
+    <link rel="stylesheet" href="../theme/css/pygments.css" /> <!-- Add Pygments CSS -->
+</head>
+<body>
+<header class="bg-gray-800 text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">
+            <a href="../">Design Patterns in Python</a>
+        </h1>
+        <nav>
+            <ul class="flex space-x-4">
+                    <li><a href="/" class="hover:text-gray-300">Home</a></li>
+                    <li><a href="/about.html" class="hover:text-gray-300">About</a></li>
+                    <li><a href="/contact.html" class="hover:text-gray-300">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+    <div class="container mx-auto p-4 flex flex-col md:flex-row gap-6">
+        <main class="w-full ">
+    <article class="prose lg:prose-xl max-w-none">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold">Singleton Pattern</h1>
+        </header>
+        
+        <div class="entry-content">
+            <hr>
+<h2>Singleton Pattern</h2>
+<p><strong>Type:</strong> Creational</p>
+<h3>Intent</h3>
+<p>Ensure a class only has <strong>one instance</strong>, and provide a <strong>global point of access</strong> to it.</p>
+<h3>Problem</h3>
+<p>Sometimes you need to control the instantiation of a class strictly, ensuring that no matter how many times you try to create an object of that class, you always get the <em>same</em> object back. This is useful for things like:</p>
+<ul>
+<li>Managing a shared resource (e.g., a database connection pool, a hardware interface).</li>
+<li>A global configuration object.</li>
+<li>Logging services.</li>
+<li>Caching mechanisms.</li>
+</ul>
+<p>If you just let clients create instances freely, you might end up with multiple objects managing the same resource, leading to conflicts, inconsistent state, or inefficient resource use.</p>
+<h3>Solution</h3>
+<p>The Singleton pattern solves this by making the class itself responsible for managing its sole instance. This typically involves:</p>
+<ol>
+<li>Making the constructor <strong>private</strong> (or otherwise preventing direct instantiation from outside).</li>
+<li>Creating a <strong>static method</strong> (or equivalent) that acts as the constructor. This method checks if an instance already exists. If it does, it returns the existing instance; otherwise, it creates a new instance, stores it, and returns it.</li>
+</ol>
+<h3>Python Implementation Examples</h3>
+<p>Python doesn't have explicit private constructors like Java or C++, but we can achieve the Singleton behavior in several ways.</p>
+<h4>1. Using a Metaclass</h4>
+<p>Metaclasses control the creation of classes themselves. We can use one to intercept the class instantiation process.</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SingletonMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A metaclass for creating Singleton classes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_instances</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Override the default call behavior. If an instance of this class</span>
+<span class="sd">        doesn&#39;t exist, create it and store it. Otherwise, return the</span>
+<span class="sd">        existing instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">cls</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">:</span>
+            <span class="n">instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span> <span class="o">=</span> <span class="n">instance</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span>
+
+<span class="c1"># Usage</span>
+<span class="k">class</span> <span class="nc">DatabaseConnection</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">SingletonMeta</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="c1"># Simulate initializing connection with config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initializing DB connection with </span><span class="si">{</span><span class="n">config</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Executing query: </span><span class="si">{</span><span class="n">sql</span><span class="si">}</span><span class="s2"> using config </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Test it</span>
+<span class="n">db1</span> <span class="o">=</span> <span class="n">DatabaseConnection</span><span class="p">(</span><span class="s2">&quot;prod_db_config&quot;</span><span class="p">)</span>
+<span class="n">db2</span> <span class="o">=</span> <span class="n">DatabaseConnection</span><span class="p">(</span><span class="s2">&quot;test_db_config&quot;</span><span class="p">)</span> <span class="c1"># This config will be ignored</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;db1 is db2: </span><span class="si">{</span><span class="n">db1</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="n">db2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># Output: True</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;db1 config: </span><span class="si">{</span><span class="n">db1</span><span class="o">.</span><span class="n">config</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># Output: prod_db_config</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;db2 config: </span><span class="si">{</span><span class="n">db2</span><span class="o">.</span><span class="n">config</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># Output: prod_db_config (same instance)</span>
+<span class="n">db1</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM users&quot;</span><span class="p">)</span>
+<span class="n">db2</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM orders&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><em>Explanation:</em> The <code>SingletonMeta.__call__</code> method is invoked when you try to create an instance like <code>DatabaseConnection(...)</code>. It checks a dictionary <code>_instances</code> to see if an instance of <code>DatabaseConnection</code> already exists. If not, it calls the original <code>__call__</code> (using <code>super()</code>) to create the instance and stores it. Subsequent calls return the stored instance.</p>
+<h4>2. Using a Decorator</h4>
+<p>Decorators can wrap class definitions to modify their behavior.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">singleton</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A decorator to turn a class into a Singleton.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">instances</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">def</span> <span class="nf">get_instance</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">cls</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
+            <span class="n">instances</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">instances</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">get_instance</span>
+
+<span class="c1"># Usage</span>
+<span class="nd">@singleton</span>
+<span class="k">class</span> <span class="nc">AppSettings</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="n">theme</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading settings with theme: </span><span class="si">{</span><span class="n">theme</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Test it</span>
+<span class="n">settings1</span> <span class="o">=</span> <span class="n">AppSettings</span><span class="p">(</span><span class="s2">&quot;dark&quot;</span><span class="p">)</span>
+<span class="n">settings2</span> <span class="o">=</span> <span class="n">AppSettings</span><span class="p">(</span><span class="s2">&quot;light&quot;</span><span class="p">)</span> <span class="c1"># This theme will be ignored</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;settings1 is settings2: </span><span class="si">{</span><span class="n">settings1</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="n">settings2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># Output: True</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;settings1 theme: </span><span class="si">{</span><span class="n">settings1</span><span class="o">.</span><span class="n">theme</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># Output: dark</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;settings2 theme: </span><span class="si">{</span><span class="n">settings2</span><span class="o">.</span><span class="n">theme</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># Output: dark (same instance)</span>
+</code></pre></div>
+
+<p><em>Explanation:</em> The <code>singleton</code> decorator replaces the original class (<code>AppSettings</code>) with the <code>get_instance</code> function. When you call <code>AppSettings("dark")</code>, you're actually calling <code>get_instance("dark")</code>. This function maintains a dictionary <code>instances</code> and ensures only one instance of the original <code>AppSettings</code> class is created and returned.</p>
+<h4>3. Using <code>__new__</code> (Base Class Approach)</h4>
+<p>You can override the <code>__new__</code> method, which is called before <code>__init__</code> during object creation.</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SingletonBase</span><span class="p">:</span>
+    <span class="n">_instance</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+            <span class="c1"># Optional: Initialize only once if needed</span>
+            <span class="c1"># cls._instance._initialized = False</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instance</span>
+
+<span class="c1"># Usage</span>
+<span class="k">class</span> <span class="nc">Logger</span><span class="p">(</span><span class="n">SingletonBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_file</span><span class="p">):</span>
+        <span class="c1"># Be careful: __init__ runs every time you call Logger()</span>
+        <span class="c1"># Use a flag if initialization should only happen once.</span>
+        <span class="c1"># if not getattr(self, &#39;_initialized&#39;, False):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_file</span> <span class="o">=</span> <span class="n">log_file</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Logger configured with file: </span><span class="si">{</span><span class="n">log_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># self._initialized = True</span>
+
+    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Logging to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Test it</span>
+<span class="n">logger1</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">(</span><span class="s2">&quot;app.log&quot;</span><span class="p">)</span>
+<span class="n">logger2</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">(</span><span class="s2">&quot;error.log&quot;</span><span class="p">)</span> <span class="c1"># This file name might be ignored depending on init logic</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;logger1 is logger2: </span><span class="si">{</span><span class="n">logger1</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="n">logger2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># Output: True</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;logger1 file: </span><span class="si">{</span><span class="n">logger1</span><span class="o">.</span><span class="n">log_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># Output: error.log (because __init__ ran again)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;logger2 file: </span><span class="si">{</span><span class="n">logger2</span><span class="o">.</span><span class="n">log_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># Output: error.log</span>
+<span class="n">logger1</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Application started.&quot;</span><span class="p">)</span>
+<span class="n">logger2</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;An error occurred.&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><em>Explanation:</em> <code>__new__</code> controls the object creation process itself. It checks if <code>_instance</code> exists for the class. If not, it creates it using <code>super().__new__(cls)</code>. It always returns the stored <code>_instance</code>. A common pitfall here is that <code>__init__</code> is still called <em>every time</em> you attempt to instantiate the class (e.g., <code>Logger(...)</code>), potentially re-initializing state unless you add guards (like the commented-out <code>_initialized</code> flag).</p>
+<h3>Pros</h3>
+<ul>
+<li><strong>Guaranteed Single Instance:</strong> Ensures only one object exists for a class.</li>
+<li><strong>Global Access Point:</strong> Provides a well-known point to access the instance.</li>
+<li><strong>Lazy Initialization:</strong> The instance is created only when it's first requested (in most implementations).</li>
+</ul>
+<h3>Cons</h3>
+<ul>
+<li><strong>Violates Single Responsibility Principle:</strong> The class is responsible for both its core logic <em>and</em> managing its own instantiation lifecycle.</li>
+<li><strong>Global State:</strong> Singletons introduce global state, which can make code harder to reason about and test. Dependencies become hidden.</li>
+<li><strong>Testing Challenges:</strong> Code that depends on a Singleton can be difficult to test in isolation, as you can't easily replace the Singleton instance with a mock or stub.</li>
+<li><strong>Concurrency Issues:</strong> In multi-threaded environments, naive Singleton implementations might create multiple instances if not properly synchronized (though the Python examples shown are generally thread-safe due to the Global Interpreter Lock for simple assignments).</li>
+</ul>
+<h3>When to Use (Use Sparingly!)</h3>
+<ul>
+<li>When exactly one instance is logically required (e.g., managing a single hardware resource).</li>
+<li>For services like logging or configuration where a single, globally accessible point makes sense.</li>
+</ul>
+<p><strong>Consider alternatives first:</strong></p>
+<ul>
+<li><strong>Dependency Injection:</strong> Pass the shared object (which might be created once at the application root) to the classes that need it. This is often more testable and flexible.</li>
+<li><strong>Module-level variables:</strong> In Python, modules themselves are singletons. You can often achieve similar results by defining functions and variables at the module level.</li>
+</ul>
+<hr>
+<p><strong>Next:</strong> <a href="link-to-factory-pattern.html">Factory Pattern</a> <em>(Link TBD)</em></p>
+        </div>
+    </article>
+        </main>
+        
+    </div>
+
+<footer class="bg-gray-200 text-gray-700 p-4 mt-8">
+    <div class="container mx-auto text-center">
+        <p>&copy; Design Patterns in Python <span id="current-year"></span>. Powered by <a href="https://getpelican.com/" class="underline hover:text-gray-900">Pelican</a>.</p>
+    </div>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</footer>
+</body>
+</html>

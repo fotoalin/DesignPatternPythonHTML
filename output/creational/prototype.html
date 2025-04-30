@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prototype Pattern - Design Patterns in Python</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script> <!-- Add Typography plugin -->
+    <link rel="stylesheet" href="../theme/css/main.css" />
+    <link rel="stylesheet" href="../theme/css/pygments.css" /> <!-- Add Pygments CSS -->
+</head>
+<body>
+<header class="bg-gray-800 text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">
+            <a href="../">Design Patterns in Python</a>
+        </h1>
+        <nav>
+            <ul class="flex space-x-4">
+                    <li><a href="/" class="hover:text-gray-300">Home</a></li>
+                    <li><a href="/about.html" class="hover:text-gray-300">About</a></li>
+                    <li><a href="/contact.html" class="hover:text-gray-300">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+    <div class="container mx-auto p-4 flex flex-col md:flex-row gap-6">
+        <main class="w-full ">
+    <article class="prose lg:prose-xl max-w-none">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold">Prototype Pattern</h1>
+        </header>
+        
+        <div class="entry-content">
+            <hr>
+<h2>Prototype Pattern</h2>
+<p><strong>Type:</strong> Creational</p>
+<h3>Intent</h3>
+<p>Specify the kinds of objects to create using a <strong>prototypical instance</strong>, and create new objects by <strong>copying</strong> this prototype.</p>
+<h3>Problem</h3>
+<p>Sometimes, creating an object directly using its constructor is inefficient or complex. This can happen when:</p>
+<ul>
+<li>Object initialization is costly (e.g., involves database queries, network calls, heavy computation).</li>
+<li>You have many similar objects that only differ slightly in their state.</li>
+<li>You want to decouple the client from the concrete classes being instantiated, similar to Factory patterns, but the focus is on copying an existing instance.</li>
+<li>The classes to instantiate are specified at runtime.</li>
+</ul>
+<p>Instead of rebuilding an object from scratch every time, it might be more efficient to take an existing, fully initialized object (the prototype) and make a copy of it, modifying the copy as needed.</p>
+<h3>Solution</h3>
+<p>The Prototype pattern relies on cloning. An object that supports cloning is designated as a prototype. This object can then be copied to produce new objects.</p>
+<ol>
+<li><strong>Prototype Interface/Abstract Class:</strong> Declares a cloning method (e.g., <code>clone()</code>).</li>
+<li><strong>Concrete Prototypes:</strong> Implement the cloning method. The complexity lies in creating a correct copy (shallow vs. deep).</li>
+<li><strong>Client:</strong> Creates a new object by asking a prototype to clone itself.</li>
+</ol>
+<p>In Python, cloning is often achieved using the <code>copy</code> module, specifically <code>copy.copy()</code> (shallow copy) and <code>copy.deepcopy()</code> (deep copy).</p>
+<ul>
+<li><strong>Shallow Copy:</strong> Creates a new object, but inserts references into it to the objects found in the original. Changes to nested objects will affect both the original and the copy.</li>
+<li><strong>Deep Copy:</strong> Creates a new object and recursively copies all objects found in the original. Changes to nested objects in the copy do <em>not</em> affect the original.</li>
+</ul>
+<p>Often, deep copy is required for the Prototype pattern to ensure the new object is truly independent.</p>
+<h3>Python Implementation Example</h3>
+<p>Let's model different shapes that can be cloned.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+
+<span class="c1"># --- Prototype Interface (Implicit via clone method) ---</span>
+<span class="k">class</span> <span class="nc">Shape</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># The prototype method</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> at (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">) with color </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="c1"># --- Concrete Prototypes ---</span>
+<span class="k">class</span> <span class="nc">Rectangle</span><span class="p">(</span><span class="n">Shape</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span>
+
+    <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># Using deepcopy for independence</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cloning Rectangle (using deepcopy)...&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="si">}</span><span class="s2"> [Width: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="si">}</span><span class="s2">, Height: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="si">}</span><span class="s2">]&quot;</span>
+
+<span class="k">class</span> <span class="nc">Circle</span><span class="p">(</span><span class="n">Shape</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">radius</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">radius</span>
+
+    <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># Using deepcopy for independence</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cloning Circle (using deepcopy)...&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="si">}</span><span class="s2"> [Radius: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="si">}</span><span class="s2">]&quot;</span>
+
+<span class="c1"># --- Prototype Registry (Optional but common) ---</span>
+<span class="k">class</span> <span class="nc">ShapeRegistry</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shapes</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">add_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="n">Shape</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Registry: Adding prototype &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shapes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">shape</span>
+
+    <span class="k">def</span> <span class="nf">get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Shape</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Registry: Retrieving prototype &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="n">prototype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shapes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">prototype</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">prototype</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; not found in registry.&quot;</span><span class="p">)</span>
+
+<span class="c1"># --- Client Code ---</span>
+
+<span class="c1"># Create initial prototypes</span>
+<span class="n">prototype_rectangle</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">prototype_circle</span> <span class="o">=</span> <span class="n">Circle</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+
+<span class="c1"># Populate registry</span>
+<span class="n">registry</span> <span class="o">=</span> <span class="n">ShapeRegistry</span><span class="p">()</span>
+<span class="n">registry</span><span class="o">.</span><span class="n">add_shape</span><span class="p">(</span><span class="s2">&quot;BigBlueRectangle&quot;</span><span class="p">,</span> <span class="n">prototype_rectangle</span><span class="p">)</span>
+<span class="n">registry</span><span class="o">.</span><span class="n">add_shape</span><span class="p">(</span><span class="s2">&quot;SmallRedCircle&quot;</span><span class="p">,</span> <span class="n">prototype_circle</span><span class="p">)</span>
+
+<span class="c1"># Client clones shapes from the registry</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Client: Requesting shapes from registry...&quot;</span><span class="p">)</span>
+<span class="n">shape1</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="s2">&quot;BigBlueRectangle&quot;</span><span class="p">)</span>
+<span class="n">shape2</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="s2">&quot;SmallRedCircle&quot;</span><span class="p">)</span>
+<span class="n">shape3</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="s2">&quot;BigBlueRectangle&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Created Shapes:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape 1: </span><span class="si">{</span><span class="n">shape1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape 2: </span><span class="si">{</span><span class="n">shape2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape 3: </span><span class="si">{</span><span class="n">shape3</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Verify independence</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Is shape1 the same object as prototype_rectangle? </span><span class="si">{</span><span class="n">shape1</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="n">prototype_rectangle</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># False</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Is shape1 the same object as shape3? </span><span class="si">{</span><span class="n">shape1</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="n">shape3</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># False</span>
+
+<span class="c1"># Modify a clone</span>
+<span class="n">shape1</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;green&quot;</span>
+<span class="n">shape1</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Modified Shape 1: </span><span class="si">{</span><span class="n">shape1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original Prototype: </span><span class="si">{</span><span class="n">prototype_rectangle</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># Unchanged</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape 3 (clone): </span><span class="si">{</span><span class="n">shape3</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># Unchanged</span>
+</code></pre></div>
+
+<p><em>Explanation:</em> We define <code>Shape</code> prototypes (<code>Rectangle</code>, <code>Circle</code>) with a <code>clone</code> method that uses <code>copy.deepcopy()</code>. An optional <code>ShapeRegistry</code> stores these prototypes. The client asks the registry for a shape by name; the registry finds the prototype and calls its <code>clone</code> method, returning a new, independent copy to the client.</p>
+<h3>Pros</h3>
+<ul>
+<li><strong>Reduced Subclassing:</strong> You can produce new objects without creating a parallel hierarchy of factory classes.</li>
+<li><strong>Performance:</strong> Cloning can be more efficient than creating complex objects from scratch, especially if initialization is expensive.</li>
+<li><strong>Dynamic Configuration:</strong> New objects can be added and removed at runtime by registering/unregistering prototypes.</li>
+<li><strong>Simpler Creation:</strong> Hides the complexity of object creation from the client.</li>
+</ul>
+<h3>Cons</h3>
+<ul>
+<li><strong>Cloning Complexity:</strong> Implementing <code>clone</code> correctly can be difficult, especially when dealing with complex objects containing circular references or non-clonable resources (like network sockets or file handles). Deep copy can be resource-intensive.</li>
+<li><strong>Hidden Initialization:</strong> The cloned object might need some state reset or re-initialized, which isn't always obvious.</li>
+</ul>
+<h3>When to Use</h3>
+<ul>
+<li>When the classes to instantiate are specified at runtime (e.g., by dynamic loading).</li>
+<li>When you want to avoid building a class hierarchy of factories that parallels the product class hierarchy.</li>
+<li>When instances of a class can have one of only a few different combinations of state. It may be more convenient to install a corresponding number of prototypes and clone them rather than instantiating the class manually each time.</li>
+<li>When object creation is significantly more expensive than cloning.</li>
+</ul>
+<hr>
+<p><strong>Next:</strong> <a href="../StructuralPatterns/adapter.html">Adapter Pattern</a> <em>(Link TBD)</em></p>
+        </div>
+    </article>
+        </main>
+        
+    </div>
+
+<footer class="bg-gray-200 text-gray-700 p-4 mt-8">
+    <div class="container mx-auto text-center">
+        <p>&copy; Design Patterns in Python <span id="current-year"></span>. Powered by <a href="https://getpelican.com/" class="underline hover:text-gray-900">Pelican</a>.</p>
+    </div>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</footer>
+</body>
+</html>

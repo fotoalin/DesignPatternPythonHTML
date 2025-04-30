@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Proxy Pattern - Design Patterns in Python</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script> <!-- Add Typography plugin -->
+    <link rel="stylesheet" href="../theme/css/main.css" />
+    <link rel="stylesheet" href="../theme/css/pygments.css" /> <!-- Add Pygments CSS -->
+</head>
+<body>
+<header class="bg-gray-800 text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">
+            <a href="../">Design Patterns in Python</a>
+        </h1>
+        <nav>
+            <ul class="flex space-x-4">
+                    <li><a href="/" class="hover:text-gray-300">Home</a></li>
+                    <li><a href="/about.html" class="hover:text-gray-300">About</a></li>
+                    <li><a href="/contact.html" class="hover:text-gray-300">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+    <div class="container mx-auto p-4 flex flex-col md:flex-row gap-6">
+        <main class="w-full ">
+    <article class="prose lg:prose-xl max-w-none">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold">Proxy Pattern</h1>
+        </header>
+        
+        <div class="entry-content">
+            <hr>
+<h2>Proxy Pattern</h2>
+<p><strong>Type:</strong> Structural</p>
+<h3>Intent</h3>
+<p>Provide a <strong>surrogate</strong> or <strong>placeholder</strong> for another object to control access to it. Proxies are used to add an additional level of indirection to support controlled access, lazy initialization, logging, or other features.</p>
+<h3>Problem</h3>
+<p>Sometimes, you want to control access to an object or add extra behavior without modifying the object itself. For example:</p>
+<ul>
+<li><strong>Expensive Objects:</strong> You want to delay the creation of a resource-intensive object until it's actually needed (e.g., loading a large image).</li>
+<li><strong>Access Control:</strong> You want to restrict access to certain objects based on user permissions.</li>
+<li><strong>Remote Access:</strong> You want to interact with an object located in a different address space (e.g., a remote server).</li>
+<li><strong>Logging/Monitoring:</strong> You want to log or monitor interactions with an object.</li>
+</ul>
+<h3>Solution</h3>
+<p>The Proxy pattern introduces a <strong>proxy object</strong> that implements the same interface as the real object. The proxy holds a reference to the real object and delegates requests to it. The proxy can add its own behavior <strong>before</strong> or <strong>after</strong> delegating the request.</p>
+<h3>Types of Proxies</h3>
+<ol>
+<li><strong>Virtual Proxy:</strong> Delays the creation and initialization of an expensive object until it's needed.</li>
+<li><strong>Protection Proxy:</strong> Controls access to the real object based on permissions.</li>
+<li><strong>Remote Proxy:</strong> Represents an object in a different address space (e.g., a remote server).</li>
+<li><strong>Logging Proxy:</strong> Logs requests to the real object.</li>
+</ol>
+<h3>Python Implementation Example</h3>
+<p>Let's create a virtual proxy for a resource-intensive object (e.g., a large image).</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+
+<span class="c1"># --- Subject Interface ---</span>
+<span class="k">class</span> <span class="nc">Image</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="c1"># --- Real Subject ---</span>
+<span class="k">class</span> <span class="nc">RealImage</span><span class="p">(</span><span class="n">Image</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_image_from_disk</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_load_image_from_disk</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading image from disk: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Displaying image: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># --- Proxy ---</span>
+<span class="k">class</span> <span class="nc">ProxyImage</span><span class="p">(</span><span class="n">Image</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_real_image</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_real_image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Proxy: Loading real image for the first time.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_real_image</span> <span class="o">=</span> <span class="n">RealImage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_real_image</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+
+<span class="c1"># --- Client Code ---</span>
+
+<span class="c1"># Client interacts with the proxy instead of the real object</span>
+<span class="n">image1</span> <span class="o">=</span> <span class="n">ProxyImage</span><span class="p">(</span><span class="s2">&quot;photo1.jpg&quot;</span><span class="p">)</span>
+<span class="n">image2</span> <span class="o">=</span> <span class="n">ProxyImage</span><span class="p">(</span><span class="s2">&quot;photo2.jpg&quot;</span><span class="p">)</span>
+
+<span class="c1"># Image is loaded only when display is called</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;First display call for image1:&quot;</span><span class="p">)</span>
+<span class="n">image1</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Second display call for image1:&quot;</span><span class="p">)</span>
+<span class="n">image1</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">First display call for image2:&quot;</span><span class="p">)</span>
+<span class="n">image2</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># First display call for image1:</span>
+<span class="c1"># Proxy: Loading real image for the first time.</span>
+<span class="c1"># Loading image from disk: photo1.jpg</span>
+<span class="c1"># Displaying image: photo1.jpg</span>
+<span class="c1">#</span>
+<span class="c1"># Second display call for image1:</span>
+<span class="c1"># Displaying image: photo1.jpg</span>
+<span class="c1">#</span>
+<span class="c1"># First display call for image2:</span>
+<span class="c1"># Proxy: Loading real image for the first time.</span>
+<span class="c1"># Loading image from disk: photo2.jpg</span>
+<span class="c1"># Displaying image: photo2.jpg</span>
+</code></pre></div>
+
+<p><em>Explanation:</em> The <code>Image</code> interface defines the <code>display()</code> method. <code>RealImage</code> is the real subject that loads and displays the image. <code>ProxyImage</code> is the proxy that delays the creation of <code>RealImage</code> until <code>display()</code> is called. The client interacts with <code>ProxyImage</code>, unaware of whether it's dealing with the proxy or the real object.</p>
+<h3>Pros</h3>
+<ul>
+<li><strong>Lazy Initialization:</strong> Delays the creation of resource-intensive objects until they're needed.</li>
+<li><strong>Access Control:</strong> Adds security by controlling access to the real object.</li>
+<li><strong>Logging/Monitoring:</strong> Adds logging or monitoring functionality without modifying the real object.</li>
+<li><strong>Decouples Client and Real Object:</strong> The client interacts with the proxy, not the real object.</li>
+</ul>
+<h3>Cons</h3>
+<ul>
+<li><strong>Overhead:</strong> Adds an extra layer of indirection, which can introduce performance overhead.</li>
+<li><strong>Complexity:</strong> Increases the complexity of the codebase.</li>
+</ul>
+<h3>When to Use</h3>
+<ul>
+<li>When you need to control access to an object.</li>
+<li>When you want to add extra behavior (e.g., logging) without modifying the real object.</li>
+<li>When you want to delay the creation of a resource-intensive object until it's needed.</li>
+<li>When you need to interact with a remote object as if it were local.</li>
+</ul>
+<hr>
+<p><strong>Next:</strong> <a href="./bridge.html">Bridge Pattern</a> <em>(Link TBD)</em></p>
+        </div>
+    </article>
+        </main>
+        
+    </div>
+
+<footer class="bg-gray-200 text-gray-700 p-4 mt-8">
+    <div class="container mx-auto text-center">
+        <p>&copy; Design Patterns in Python <span id="current-year"></span>. Powered by <a href="https://getpelican.com/" class="underline hover:text-gray-900">Pelican</a>.</p>
+    </div>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</footer>
+</body>
+</html>

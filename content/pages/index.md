@@ -30,11 +30,11 @@ Understand the **why** before the **what**.
   → Makes code cleaner, flexible, and easy to change.
 
 - **Learn SOLID Principles**:
-  - Single Responsibility
-  - Open/Closed
-  - Liskov Substitution
-  - Interface Segregation
-  - Dependency Inversion
+    - Single Responsibility
+    - Open/Closed
+    - Liskov Substitution
+    - Interface Segregation
+    - Dependency Inversion
 
 #### 📚 Resources:
 - Book: *“Clean Code”* by Robert C. Martin (chapters 1–7)
@@ -77,14 +77,14 @@ Split them into **three categories**. Learn 2–3 patterns at a time, then pract
 
 #### 📌 Learning Tips:
 - For each pattern:
-  1. Learn the idea (1-page summary).
-  2. See a code example.
-  3. Build your own small example.
+    1. Learn the idea (1-page summary).
+    2. See a code example.
+    3. Build your own small example.
 
 #### 📚 Resources:
-- Book: *“Head First Design Patterns”* (easy and visual)
-- YouTube: “Design Patterns in Python” (by Mosh or Amigoscode)
-- Website: [Refactoring Guru](https://refactoring.guru/design-patterns)
+  - Book: *“Head First Design Patterns”* (easy and visual)
+  - YouTube: “Design Patterns in Python” (by Mosh or Amigoscode)
+  - Website: [Refactoring Guru](https://refactoring.guru/design-patterns)
 
 ---
 
@@ -119,4 +119,3 @@ Ask yourself:
 - Use `mypy` for types
 - Test with `pytest`
 - Document patterns in your projects with comments like: `# Strategy pattern here`
-

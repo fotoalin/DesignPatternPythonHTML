@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Facade Pattern - Design Patterns in Python</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script> <!-- Add Typography plugin -->
+    <link rel="stylesheet" href="../theme/css/main.css" />
+    <link rel="stylesheet" href="../theme/css/pygments.css" /> <!-- Add Pygments CSS -->
+</head>
+<body>
+<header class="bg-gray-800 text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">
+            <a href="../">Design Patterns in Python</a>
+        </h1>
+        <nav>
+            <ul class="flex space-x-4">
+                    <li><a href="/" class="hover:text-gray-300">Home</a></li>
+                    <li><a href="/about.html" class="hover:text-gray-300">About</a></li>
+                    <li><a href="/contact.html" class="hover:text-gray-300">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+    <div class="container mx-auto p-4 flex flex-col md:flex-row gap-6">
+        <main class="w-full ">
+    <article class="prose lg:prose-xl max-w-none">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold">Facade Pattern</h1>
+        </header>
+        
+        <div class="entry-content">
+            <hr>
+<h2>Facade Pattern</h2>
+<p><strong>Type:</strong> Structural</p>
+<h3>Intent</h3>
+<p>Provide a <strong>unified interface</strong> to a set of interfaces in a subsystem. Facade defines a higher-level interface that makes the subsystem <strong>easier to use</strong>.</p>
+<h3>Problem</h3>
+<p>Imagine a complex system with many interacting classes and objects (e.g., a video conversion library, a complex set of APIs for an online store, a home automation system). To perform a common task, a client might need to interact with multiple objects within the subsystem, understand their relationships, and manage their lifecycles.</p>
+<p>This leads to:
+*   <strong>High Coupling:</strong> The client code becomes tightly coupled to the internal structure of the subsystem.
+*   <strong>Complexity:</strong> The client has to manage the intricate details of the subsystem's interactions.
+*   <strong>Difficult Maintenance:</strong> Changes within the subsystem can easily break the client code.</p>
+<p>Clients often don't need the full flexibility of the subsystem; they just want a simple way to perform common tasks.</p>
+<h3>Solution</h3>
+<p>The Facade pattern introduces a single <code>Facade</code> class that:</p>
+<ol>
+<li><strong>Knows the Subsystem:</strong> It holds references to the necessary objects within the complex subsystem.</li>
+<li><strong>Provides Simplified Methods:</strong> It offers a limited number of high-level methods that correspond to common client tasks.</li>
+<li><strong>Delegates Requests:</strong> When a client calls a facade method, the facade orchestrates the necessary interactions among the subsystem objects to fulfill the request.</li>
+</ol>
+<p>The client interacts only with the Facade, decoupling it from the complexities of the subsystem.</p>
+<h3>Python Implementation Example</h3>
+<p>Let's model a simplified home theater system with multiple components (DVD Player, Projector, Amplifier, Screen) and create a facade to simplify common actions like "Watch Movie" and "End Movie".</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># --- Subsystem Components ---</span>
+<span class="k">class</span> <span class="nc">DvdPlayer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">on</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DVD Player: On&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DVD Player: Off&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">play</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">movie</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DVD Player: Playing &#39;</span><span class="si">{</span><span class="n">movie</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DVD Player: Stopped&quot;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Projector</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">on</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Projector: On&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Projector: Off&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wide_screen_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Projector: Wide Screen Mode&quot;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Amplifier</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">on</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Amplifier: On&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Amplifier: Off&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">set_dvd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dvd_player</span><span class="p">:</span> <span class="n">DvdPlayer</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Amplifier: Setting DVD player&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">set_surround_sound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Amplifier: Surround Sound On&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">set_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Amplifier: Setting Volume to </span><span class="si">{</span><span class="n">level</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Screen</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">up</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Screen: Going Up&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">down</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Screen: Going Down&quot;</span><span class="p">)</span>
+
+<span class="c1"># --- Facade Class ---</span>
+<span class="k">class</span> <span class="nc">HomeTheaterFacade</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provides a simplified interface to the home theater subsystem.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amp</span><span class="p">:</span> <span class="n">Amplifier</span><span class="p">,</span> <span class="n">dvd</span><span class="p">:</span> <span class="n">DvdPlayer</span><span class="p">,</span> <span class="n">proj</span><span class="p">:</span> <span class="n">Projector</span><span class="p">,</span> <span class="n">screen</span><span class="p">:</span> <span class="n">Screen</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;HomeTheaterFacade: Initializing subsystem components.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_amplifier</span> <span class="o">=</span> <span class="n">amp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dvd_player</span> <span class="o">=</span> <span class="n">dvd</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_projector</span> <span class="o">=</span> <span class="n">proj</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_screen</span> <span class="o">=</span> <span class="n">screen</span>
+
+    <span class="k">def</span> <span class="nf">watch_movie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">movie</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles all steps to start watching a movie.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Facade: Get ready to watch a movie...&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_screen</span><span class="o">.</span><span class="n">down</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_projector</span><span class="o">.</span><span class="n">on</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_projector</span><span class="o">.</span><span class="n">wide_screen_mode</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_amplifier</span><span class="o">.</span><span class="n">on</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_amplifier</span><span class="o">.</span><span class="n">set_dvd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dvd_player</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_amplifier</span><span class="o">.</span><span class="n">set_surround_sound</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_amplifier</span><span class="o">.</span><span class="n">set_volume</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dvd_player</span><span class="o">.</span><span class="n">on</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dvd_player</span><span class="o">.</span><span class="n">play</span><span class="p">(</span><span class="n">movie</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">end_movie</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles all steps to shut down the theater.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Facade: Shutting movie theater down...&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dvd_player</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dvd_player</span><span class="o">.</span><span class="n">off</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_amplifier</span><span class="o">.</span><span class="n">off</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_projector</span><span class="o">.</span><span class="n">off</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_screen</span><span class="o">.</span><span class="n">up</span><span class="p">()</span>
+
+<span class="c1"># --- Client Code ---</span>
+
+<span class="c1"># Create subsystem components</span>
+<span class="n">amp</span> <span class="o">=</span> <span class="n">Amplifier</span><span class="p">()</span>
+<span class="n">dvd</span> <span class="o">=</span> <span class="n">DvdPlayer</span><span class="p">()</span>
+<span class="n">proj</span> <span class="o">=</span> <span class="n">Projector</span><span class="p">()</span>
+<span class="n">screen</span> <span class="o">=</span> <span class="n">Screen</span><span class="p">()</span>
+
+<span class="c1"># Create the Facade</span>
+<span class="n">facade</span> <span class="o">=</span> <span class="n">HomeTheaterFacade</span><span class="p">(</span><span class="n">amp</span><span class="p">,</span> <span class="n">dvd</span><span class="p">,</span> <span class="n">proj</span><span class="p">,</span> <span class="n">screen</span><span class="p">)</span>
+
+<span class="c1"># Client uses the simple interface</span>
+<span class="n">facade</span><span class="o">.</span><span class="n">watch_movie</span><span class="p">(</span><span class="s2">&quot;Raiders of the Lost Ark&quot;</span><span class="p">)</span>
+<span class="n">facade</span><span class="o">.</span><span class="n">end_movie</span><span class="p">()</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># HomeTheaterFacade: Initializing subsystem components.</span>
+<span class="c1">#</span>
+<span class="c1"># Facade: Get ready to watch a movie...</span>
+<span class="c1"># Screen: Going Down</span>
+<span class="c1"># Projector: On</span>
+<span class="c1"># Projector: Wide Screen Mode</span>
+<span class="c1"># Amplifier: On</span>
+<span class="c1"># Amplifier: Setting DVD player</span>
+<span class="c1"># Amplifier: Surround Sound On</span>
+<span class="c1"># Amplifier: Setting Volume to 5</span>
+<span class="c1"># DVD Player: On</span>
+<span class="c1"># DVD Player: Playing &#39;Raiders of the Lost Ark&#39;</span>
+<span class="c1">#</span>
+<span class="c1"># Facade: Shutting movie theater down...</span>
+<span class="c1"># DVD Player: Stopped</span>
+<span class="c1"># DVD Player: Off</span>
+<span class="c1"># Amplifier: Off</span>
+<span class="c1"># Projector: Off</span>
+<span class="c1"># Screen: Going Up</span>
+</code></pre></div>
+
+<p><em>Explanation:</em> The <code>HomeTheaterFacade</code> wraps the <code>Amplifier</code>, <code>DvdPlayer</code>, <code>Projector</code>, and <code>Screen</code> objects. The client code only needs to interact with the <code>facade</code> object and call simple methods like <code>watch_movie()</code> and <code>end_movie()</code>. The facade handles the complex sequence of calls to the underlying subsystem components.</p>
+<h3>Pros</h3>
+<ul>
+<li><strong>Simplifies Client Code:</strong> Provides a simpler, higher-level interface for common tasks.</li>
+<li><strong>Decouples Client from Subsystem:</strong> Reduces the dependencies between the client and the internal workings of the subsystem. Changes within the subsystem are less likely to affect the client as long as the facade interface remains stable.</li>
+<li><strong>Organizes Subsystem:</strong> Can help structure a complex subsystem by introducing a clear entry point.</li>
+</ul>
+<h3>Cons</h3>
+<ul>
+<li><strong>Can Become a God Object:</strong> The facade itself can become overly complex if it tries to expose too much functionality from the subsystem.</li>
+<li><strong>Hides Features (Potentially):</strong> While simplifying, it might hide useful lower-level features of the subsystem from clients who need more control (though clients can often still access subsystem objects directly if needed).</li>
+<li><strong>Doesn't Prevent Direct Access:</strong> Clients can often still bypass the facade and interact with the subsystem directly if necessary (which can be good or bad depending on the design goals).</li>
+</ul>
+<h3>When to Use</h3>
+<ul>
+<li>When you want to provide a simple interface to a complex subsystem.</li>
+<li>When you want to decouple clients from the implementation details of a subsystem, making the subsystem easier to evolve.</li>
+<li>When you want to layer your subsystems, using facades to define entry points to each level.</li>
+</ul>
+<hr>
+<p><strong>Next:</strong> <a href="./composite.html">Composite Pattern</a> <em>(Link TBD)</em></p>
+        </div>
+    </article>
+        </main>
+        
+    </div>
+
+<footer class="bg-gray-200 text-gray-700 p-4 mt-8">
+    <div class="container mx-auto text-center">
+        <p>&copy; Design Patterns in Python <span id="current-year"></span>. Powered by <a href="https://getpelican.com/" class="underline hover:text-gray-900">Pelican</a>.</p>
+    </div>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</footer>
+</body>
+</html>

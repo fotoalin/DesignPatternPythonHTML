@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bridge Pattern - Design Patterns in Python</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script> <!-- Add Typography plugin -->
+    <link rel="stylesheet" href="../theme/css/main.css" />
+    <link rel="stylesheet" href="../theme/css/pygments.css" /> <!-- Add Pygments CSS -->
+</head>
+<body>
+<header class="bg-gray-800 text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">
+            <a href="../">Design Patterns in Python</a>
+        </h1>
+        <nav>
+            <ul class="flex space-x-4">
+                    <li><a href="/" class="hover:text-gray-300">Home</a></li>
+                    <li><a href="/about.html" class="hover:text-gray-300">About</a></li>
+                    <li><a href="/contact.html" class="hover:text-gray-300">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+    <div class="container mx-auto p-4 flex flex-col md:flex-row gap-6">
+        <main class="w-full ">
+    <article class="prose lg:prose-xl max-w-none">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold">Bridge Pattern</h1>
+        </header>
+        
+        <div class="entry-content">
+            <hr>
+<h2>Bridge Pattern</h2>
+<p><strong>Type:</strong> Structural</p>
+<h3>Intent</h3>
+<p>Decouple an abstraction from its implementation so that the two can vary independently. The Bridge pattern is used to separate the abstraction (interface) from the implementation, allowing them to evolve independently.</p>
+<h3>Problem</h3>
+<p>Imagine you are building a graphical application that supports multiple platforms (e.g., Windows, macOS, Linux) and multiple shapes (e.g., Circle, Rectangle). You want to:</p>
+<ul>
+<li>Avoid a combinatorial explosion of classes (e.g., <code>WindowsCircle</code>, <code>MacRectangle</code>, etc.).</li>
+<li>Allow adding new platforms or shapes without modifying existing code.</li>
+</ul>
+<h3>Solution</h3>
+<p>The Bridge pattern splits the code into two hierarchies:</p>
+<ol>
+<li><strong>Abstraction:</strong> Represents the high-level interface (e.g., <code>Shape</code>).</li>
+<li><strong>Implementation:</strong> Represents the platform-specific implementation (e.g., <code>PlatformRenderer</code>).</li>
+</ol>
+<p>The abstraction holds a reference to an implementation object and delegates work to it. This decouples the two hierarchies, allowing them to vary independently.</p>
+<h3>Python Implementation Example</h3>
+<p>Let's model a graphical application with shapes and platform renderers.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+
+<span class="c1"># --- Implementation Hierarchy ---</span>
+<span class="k">class</span> <span class="nc">Renderer</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">render_circle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">render_rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">WindowsRenderer</span><span class="p">(</span><span class="n">Renderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">render_circle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Windows: Rendering circle with radius </span><span class="si">{</span><span class="n">radius</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render_rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Windows: Rendering rectangle </span><span class="si">{</span><span class="n">width</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">height</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">MacRenderer</span><span class="p">(</span><span class="n">Renderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">render_circle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mac: Rendering circle with radius </span><span class="si">{</span><span class="n">radius</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render_rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mac: Rendering rectangle </span><span class="si">{</span><span class="n">width</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">height</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># --- Abstraction Hierarchy ---</span>
+<span class="k">class</span> <span class="nc">Shape</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">:</span> <span class="n">Renderer</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span> <span class="o">=</span> <span class="n">renderer</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">Circle</span><span class="p">(</span><span class="n">Shape</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">:</span> <span class="n">Renderer</span><span class="p">,</span> <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_radius</span> <span class="o">=</span> <span class="n">radius</span>
+
+    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span><span class="o">.</span><span class="n">render_circle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_radius</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Rectangle</span><span class="p">(</span><span class="n">Shape</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">:</span> <span class="n">Renderer</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_height</span> <span class="o">=</span> <span class="n">height</span>
+
+    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span><span class="o">.</span><span class="n">render_rectangle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">)</span>
+
+<span class="c1"># --- Client Code ---</span>
+
+<span class="c1"># Create platform renderers</span>
+<span class="n">windows_renderer</span> <span class="o">=</span> <span class="n">WindowsRenderer</span><span class="p">()</span>
+<span class="n">mac_renderer</span> <span class="o">=</span> <span class="n">MacRenderer</span><span class="p">()</span>
+
+<span class="c1"># Create shapes with different renderers</span>
+<span class="n">circle</span> <span class="o">=</span> <span class="n">Circle</span><span class="p">(</span><span class="n">windows_renderer</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">rectangle</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="n">mac_renderer</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="c1"># Draw shapes</span>
+<span class="n">circle</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+<span class="n">rectangle</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># Windows: Rendering circle with radius 5</span>
+<span class="c1"># Mac: Rendering rectangle 10x20</span>
+</code></pre></div>
+
+<p><em>Explanation:</em> The <code>Renderer</code> interface defines platform-specific rendering methods. <code>WindowsRenderer</code> and <code>MacRenderer</code> implement these methods for their respective platforms. The <code>Shape</code> abstraction defines the high-level interface for shapes. <code>Circle</code> and <code>Rectangle</code> are concrete shapes that delegate rendering to the <code>Renderer</code> object. This decouples the shape hierarchy from the platform hierarchy.</p>
+<h3>Pros</h3>
+<ul>
+<li><strong>Decouples Abstraction and Implementation:</strong> Allows them to evolve independently.</li>
+<li><strong>Reduces Class Explosion:</strong> Avoids combinatorial explosion of classes.</li>
+<li><strong>Improves Flexibility:</strong> Makes it easy to add new abstractions or implementations.</li>
+</ul>
+<h3>Cons</h3>
+<ul>
+<li><strong>Increases Complexity:</strong> Adds indirection and complexity to the codebase.</li>
+</ul>
+<h3>When to Use</h3>
+<ul>
+<li>When you want to decouple an abstraction from its implementation.</li>
+<li>When you want to avoid a combinatorial explosion of classes.</li>
+<li>When you want to improve flexibility and extensibility.</li>
+</ul>
+<hr>
+<p><strong>Next:</strong> <a href="./flyweight.html">Flyweight Pattern</a> <em>(Link TBD)</em></p>
+        </div>
+    </article>
+        </main>
+        
+    </div>
+
+<footer class="bg-gray-200 text-gray-700 p-4 mt-8">
+    <div class="container mx-auto text-center">
+        <p>&copy; Design Patterns in Python <span id="current-year"></span>. Powered by <a href="https://getpelican.com/" class="underline hover:text-gray-900">Pelican</a>.</p>
+    </div>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</footer>
+</body>
+</html>

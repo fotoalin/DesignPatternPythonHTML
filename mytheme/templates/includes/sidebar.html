@@ -1,28 +1,65 @@
 <aside class="w-full md:w-1/4 p-4 bg-gray-100 rounded">
-    <section class="mb-6">
-        <h2 class="text-xl font-semibold mb-3 border-b pb-2">Learning Path</h2>
-        <ul class="list-none space-y-1">
-            <li><a href="{{ SITEURL }}/phase1-get-the-basics-right.html" class="hover:text-blue-600">Phase 1: Basics</a></li>
-            <li><a href="{{ SITEURL }}/phase2-learn-the-patterns-by-category.html" class="hover:text-blue-600">Phase 2: Categories</a></li>
-            <li><a href="{{ SITEURL }}/phase3-use-patterns-in-real-code.html" class="hover:text-blue-600">Phase 3: Practice</a></li>
-            <li><a href="{{ SITEURL }}/phase4-think-like-an-architect.html" class="hover:text-blue-600">Phase 4: Architecture</a></li>
-        </ul>
-    </section>
-
-    {% if DISPLAY_CATEGORIES_ON_SIDEBAR != False %}
+    {# Show Learning Path links only on Index page #}
+    {% if page and page.slug == 'Index' %}
         <section class="mb-6">
-            <h2 class="text-xl font-semibold mb-3 border-b pb-2">Categories</h2>
+            <h2 class="text-xl font-semibold mb-3 border-b pb-2">Learning Path</h2>
             <ul class="list-none space-y-1">
-            {% for cat, null in categories %}
-                <li{% if cat == category %} class="font-bold"{% endif %}>
-                    <a href="{{ SITEURL }}/{{ cat.url }}" class="hover:text-blue-600">{{ cat.name }}</a>
-                </li>
-            {% endfor %}
+                <li><a href="{{ SITEURL }}/phase1-get-the-basics-right.html" class="hover:text-blue-600">Phase 1: Basics</a></li>
+                <li><a href="{{ SITEURL }}/phase2-learn-the-patterns-by-category.html" class="hover:text-blue-600">Phase 2: Categories</a></li>
+                <li><a href="{{ SITEURL }}/phase3-use-patterns-in-real-code.html" class="hover:text-blue-600">Phase 3: Practice</a></li>
+                <li><a href="{{ SITEURL }}/phase4-think-like-an-architect.html" class="hover:text-blue-600">Phase 4: Architecture</a></li>
             </ul>
         </section>
     {% endif %}
 
-    {% if DISPLAY_TAGS_ON_SIDEBAR != False and tags %}
+    {# Show Pattern Category links only on Phase 2 page #}
+    {% if page and page.slug == 'phase2-learn-the-patterns-by-category' %}
+        <section class="mb-6">
+            <h2 class="text-xl font-semibold mb-3 border-b pb-2">Creational Patterns</h2>
+            <ul class="list-none space-y-1">
+                <li><a href="{{ SITEURL }}/creational/singleton.html" class="hover:text-blue-600">Singleton</a></li>
+                <li><a href="{{ SITEURL }}/creational/factory.html" class="hover:text-blue-600">Factory</a></li>
+                <li><a href="{{ SITEURL }}/creational/abstract-factory.html" class="hover:text-blue-600">Abstract Factory</a></li>
+                <li><a href="{{ SITEURL }}/creational/builder.html" class="hover:text-blue-600">Builder</a></li>
+                <li><a href="{{ SITEURL }}/creational/prototype.html" class="hover:text-blue-600">Prototype</a></li>
+            </ul>
+        </section>
+        <section class="mb-6">
+            <h2 class="text-xl font-semibold mb-3 border-b pb-2">Structural Patterns</h2>
+            <ul class="list-none space-y-1">
+                <li><a href="{{ SITEURL }}/structural/adapter.html" class="hover:text-blue-600">Adapter</a></li>
+                <li><a href="{{ SITEURL }}/structural/decorator.html" class="hover:text-blue-600">Decorator</a></li>
+                <li><a href="{{ SITEURL }}/structural/facade.html" class="hover:text-blue-600">Facade</a></li>
+                <li><a href="{{ SITEURL }}/structural/composite.html" class="hover:text-blue-600">Composite</a></li>
+                <li><a href="{{ SITEURL }}/structural/proxy.html" class="hover:text-blue-600">Proxy</a></li>
+                <li><a href="{{ SITEURL }}/structural/bridge.html" class="hover:text-blue-600">Bridge</a></li>
+                <li><a href="{{ SITEURL }}/structural/flyweight.html" class="hover:text-blue-600">Flyweight</a></li>
+            </ul>
+        </section>
+        <section class="mb-6">
+            <h2 class="text-xl font-semibold mb-3 border-b pb-2">Behavioral Patterns</h2>
+            <ul class="list-none space-y-1">
+                <li><a href="{{ SITEURL }}/behavioral/observer.html" class="hover:text-blue-600">Observer</a></li>
+                <li><a href="{{ SITEURL }}/behavioral/strategy.html" class="hover:text-blue-600">Strategy</a></li>
+                <li><a href="{{ SITEURL }}/behavioral/command.html" class="hover:text-blue-600">Command</a></li>
+                <li><a href="{{ SITEURL }}/behavioral/state.html" class="hover:text-blue-600">State</a></li>
+                <li><a href="{{ SITEURL }}/behavioral/template_method.html" class="hover:text-blue-600">Template Method</a></li>
+                <li><a href="{{ SITEURL }}/behavioral/chain_of_responsibility.html" class="hover:text-blue-600">Chain of Responsibility</a></li>
+                <li><a href="{{ SITEURL }}/behavioral/mediator.html" class="hover:text-blue-600">Mediator</a></li>
+                <li><a href="{{ SITEURL }}/behavioral/memento.html" class="hover:text-blue-600">Memento</a></li>
+                <li><a href="{{ SITEURL }}/behavioral/visitor.html" class="hover:text-blue-600">Visitor</a></li>
+                <li><a href="{{ SITEURL }}/behavioral/iterator.html" class="hover:text-blue-600">Iterator</a></li>
+                <li><a href="{{ SITEURL }}/behavioral/interpreter.html" class="hover:text-blue-600">Interpreter</a></li>
+            </ul>
+        </section>
+    {% endif %}
+
+    {# --- Optional sections below (Tags, Social, Links) --- #}
+    {# Conditionally display these based on config AND if they should be shown on the current page type #}
+    
+    {% set show_optional_sidebar = page and (page.slug == 'Index' or page.slug == 'phase2-learn-the-patterns-by-category') %}
+
+    {% if show_optional_sidebar and DISPLAY_TAGS_ON_SIDEBAR != False and tags %}
         <section class="mb-6">
             <h2 class="text-xl font-semibold mb-3 border-b pb-2">Tags</h2>
             <ul class="flex flex-wrap gap-2">
@@ -35,7 +72,7 @@
         </section>
     {% endif %}
 
-    {% if SOCIAL %}
+    {% if show_optional_sidebar and SOCIAL %}
         <section class="mb-6">
             <h2 class="text-xl font-semibold mb-3 border-b pb-2">Social</h2>
             <ul class="list-none space-y-1">
@@ -46,7 +83,7 @@
         </section>
     {% endif %}
 
-    {% if LINKS %}
+    {% if show_optional_sidebar and LINKS %}
         <section>
             <h2 class="text-xl font-semibold mb-3 border-b pb-2">Links</h2>
             <ul class="list-none space-y-1">

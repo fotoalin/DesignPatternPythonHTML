@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flyweight Pattern - Design Patterns in Python</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script> <!-- Add Typography plugin -->
+    <link rel="stylesheet" href="../theme/css/main.css" />
+    <link rel="stylesheet" href="../theme/css/pygments.css" /> <!-- Add Pygments CSS -->
+    
+</head>
+<body>
+<header class="bg-gray-800 text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">
+            <a href="../">Design Patterns in Python</a>
+        </h1>
+        <nav>
+            <ul class="flex space-x-4">
+                    <li><a href="/" class="hover:text-gray-300">Home</a></li>
+                    <li><a href="/about.html" class="hover:text-gray-300">About</a></li>
+                    <li><a href="/contact.html" class="hover:text-gray-300">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+    <div class="container mx-auto p-4 flex flex-col md:flex-row gap-6">
+        <main class="w-full ">
+    <article class="prose lg:prose-xl max-w-none">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold mb-2">Flyweight Pattern</h1>
+            <div class="text-gray-600 text-sm">
+                Published on Wed 30 April 2025 by Alin Morosanu
+                    in <a href="../category/structural-patterns.html" class="hover:underline">Structural Patterns</a>
+                    | Tags: 
+                        <a href="../tag/design-patterns.html" class="hover:underline">design patterns</a>,                         <a href="../tag/flyweight.html" class="hover:underline">flyweight</a>,                         <a href="../tag/structural-patterns.html" class="hover:underline">structural patterns</a>            </div>
+        </header>
+        
+        <div class="entry-content">
+            <h3>Flyweight Pattern</h3>
+<p>xxx
+The <strong>Flyweight Pattern</strong> is a structural design pattern that focuses on reducing memory usage by sharing as much data as possible with similar objects.</p>
+<h4>✅ Goals:</h4>
+<ul>
+<li>Optimize memory usage.</li>
+<li>Share common data among multiple objects.</li>
+</ul>
+<h4>🔧 When to Use:</h4>
+<ul>
+<li>When your application creates a large number of similar objects.</li>
+<li>When memory usage is a concern.</li>
+</ul>
+<h4>🛠️ How it Works:</h4>
+<ol>
+<li>Identify shared data that can be extracted.</li>
+<li>Create a Flyweight object to hold this shared data.</li>
+<li>Use a factory to manage and reuse Flyweight objects.</li>
+</ol>
+<h4>📚 Example:</h4>
+<p>Imagine a text editor where each character is an object. Instead of creating a new object for every character, the Flyweight Pattern allows you to share the same object for characters with the same properties (e.g., font, size).</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Flyweight</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shared_state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shared_state</span> <span class="o">=</span> <span class="n">shared_state</span>
+
+    <span class="k">def</span> <span class="nf">operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_state</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shared: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shared_state</span><span class="si">}</span><span class="s2">, Unique: </span><span class="si">{</span><span class="n">unique_state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">FlyweightFactory</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flyweights</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">get_flyweight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shared_state</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">shared_state</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flyweights</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_flyweights</span><span class="p">[</span><span class="n">shared_state</span><span class="p">]</span> <span class="o">=</span> <span class="n">Flyweight</span><span class="p">(</span><span class="n">shared_state</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flyweights</span><span class="p">[</span><span class="n">shared_state</span><span class="p">]</span>
+
+<span class="c1"># Usage</span>
+<span class="n">factory</span> <span class="o">=</span> <span class="n">FlyweightFactory</span><span class="p">()</span>
+<span class="n">flyweight1</span> <span class="o">=</span> <span class="n">factory</span><span class="o">.</span><span class="n">get_flyweight</span><span class="p">(</span><span class="s2">&quot;Arial, 12pt&quot;</span><span class="p">)</span>
+<span class="n">flyweight1</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span><span class="s2">&quot;Character A&quot;</span><span class="p">)</span>
+<span class="n">flyweight2</span> <span class="o">=</span> <span class="n">factory</span><span class="o">.</span><span class="n">get_flyweight</span><span class="p">(</span><span class="s2">&quot;Arial, 12pt&quot;</span><span class="p">)</span>
+<span class="n">flyweight2</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span><span class="s2">&quot;Character B&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<h4>📌 Key Points:</h4>
+<ul>
+<li>Shared state is stored in the Flyweight object.</li>
+<li>Unique state is passed to the Flyweight object when needed.</li>
+</ul>
+<h4>📚 Resources:</h4>
+<ul>
+<li>Book: <em>“Design Patterns: Elements of Reusable Object-Oriented Software”</em> by the Gang of Four</li>
+<li>Website: <a href="https://refactoring.guru/design-patterns/flyweight">Refactoring Guru</a></li>
+</ul>
+<hr>
+        </div>
+
+    </article>
+        </main>
+        
+    </div>
+
+<footer class="bg-gray-200 text-gray-700 p-4 mt-8">
+    <div class="container mx-auto text-center">
+        <p>&copy; Design Patterns in Python <span id="current-year"></span>. Powered by <a href="https://getpelican.com/" class="underline hover:text-gray-900">Pelican</a>.</p>
+    </div>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</footer>
+</body>
+</html>

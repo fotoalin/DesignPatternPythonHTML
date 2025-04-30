@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Decorator Pattern - Design Patterns in Python</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script> <!-- Add Typography plugin -->
+    <link rel="stylesheet" href="../theme/css/main.css" />
+    <link rel="stylesheet" href="../theme/css/pygments.css" /> <!-- Add Pygments CSS -->
+</head>
+<body>
+<header class="bg-gray-800 text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">
+            <a href="../">Design Patterns in Python</a>
+        </h1>
+        <nav>
+            <ul class="flex space-x-4">
+                    <li><a href="/" class="hover:text-gray-300">Home</a></li>
+                    <li><a href="/about.html" class="hover:text-gray-300">About</a></li>
+                    <li><a href="/contact.html" class="hover:text-gray-300">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+    <div class="container mx-auto p-4 flex flex-col md:flex-row gap-6">
+        <main class="w-full ">
+    <article class="prose lg:prose-xl max-w-none">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold">Decorator Pattern</h1>
+        </header>
+        
+        <div class="entry-content">
+            <hr>
+<h2>Decorator Pattern (Wrapper)</h2>
+<p><strong>Type:</strong> Structural</p>
+<h3>Intent</h3>
+<p>Attach <strong>additional responsibilities</strong> to an object <strong>dynamically</strong>. Decorators provide a flexible alternative to subclassing for extending functionality.</p>
+<h3>Problem</h3>
+<p>Sometimes you want to add behavior or state to individual objects at runtime, rather than affecting the entire class. Subclassing is one way to extend behavior, but it has drawbacks:</p>
+<ul>
+<li><strong>Static:</strong> Inheritance is fixed at compile time. You can't easily add or remove responsibilities from an object on the fly.</li>
+<li><strong>Class Explosion:</strong> If you need many different combinations of optional behaviors (e.g., adding logging, then compression, then encryption to a data stream), you might end up with a large number of subclasses (<code>LoggingStream</code>, <code>CompressedStream</code>, <code>LoggingCompressedStream</code>, <code>EncryptedLoggingCompressedStream</code>, etc.).</li>
+<li><strong>Affects All Instances:</strong> Subclassing affects all instances of the subclass. Decorator lets you modify single objects.</li>
+</ul>
+<h3>Solution</h3>
+<p>The Decorator pattern involves creating a set of decorator classes that wrap the original component.</p>
+<ol>
+<li><strong>Component Interface:</strong> Defines the common interface for both the objects being decorated (Wrappees) and the decorators themselves.</li>
+<li><strong>Concrete Component:</strong> The original class whose behavior needs to be extended. It implements the Component interface.</li>
+<li><strong>Base Decorator (Optional but common):</strong> An abstract class that also implements the Component interface. It holds a reference to a wrapped component object and delegates operations to it. This simplifies the creation of concrete decorators.</li>
+<li><strong>Concrete Decorators:</strong> Subclasses of the Base Decorator (or directly implement the Component interface). They add their specific behavior <em>before</em> or <em>after</em> delegating the call to the wrapped component.</li>
+</ol>
+<p>Decorators have the same interface as the objects they wrap, allowing for recursive composition (stacking decorators). The client code typically interacts with the outermost decorator through the common Component interface, unaware of the specific decorators applied.</p>
+<h3>Python Implementation Example</h3>
+<p>Let's create a simple text component and decorate it with features like adding asterisks or exclamation marks around it.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+
+<span class="c1"># --- Component Interface ---</span>
+<span class="k">class</span> <span class="nc">TextComponent</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+<span class="c1"># --- Concrete Component ---</span>
+<span class="k">class</span> <span class="nc">PlainText</span><span class="p">(</span><span class="n">TextComponent</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">text</span>
+
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span>
+
+<span class="c1"># --- Base Decorator (Implements Component Interface) ---</span>
+<span class="k">class</span> <span class="nc">TextDecorator</span><span class="p">(</span><span class="n">TextComponent</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapped_component</span><span class="p">:</span> <span class="n">TextComponent</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_component</span> <span class="o">=</span> <span class="n">wrapped_component</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Wrapping with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="c1"># Base decorator usually delegates, but subclasses override</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_component</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+
+<span class="c1"># --- Concrete Decorators ---</span>
+<span class="k">class</span> <span class="nc">AsteriskDecorator</span><span class="p">(</span><span class="n">TextDecorator</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">original_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_component</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AsteriskDecorator: Adding asterisks to &#39;</span><span class="si">{</span><span class="n">original_text</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;*** </span><span class="si">{</span><span class="n">original_text</span><span class="si">}</span><span class="s2"> ***&quot;</span>
+
+<span class="k">class</span> <span class="nc">ExclamationDecorator</span><span class="p">(</span><span class="n">TextDecorator</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">original_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_component</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ExclamationDecorator: Adding exclamation marks to &#39;</span><span class="si">{</span><span class="n">original_text</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">original_text</span><span class="si">}</span><span class="s2"> !!!&quot;</span>
+
+<span class="k">class</span> <span class="nc">UpperCaseDecorator</span><span class="p">(</span><span class="n">TextDecorator</span><span class="p">):</span>
+     <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">original_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_component</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;UpperCaseDecorator: Uppercasing &#39;</span><span class="si">{</span><span class="n">original_text</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">original_text</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+<span class="c1"># --- Client Code ---</span>
+
+<span class="c1"># Start with a plain text component</span>
+<span class="n">plain</span> <span class="o">=</span> <span class="n">PlainText</span><span class="p">(</span><span class="s2">&quot;Hello, World&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original: </span><span class="si">{</span><span class="n">plain</span><span class="o">.</span><span class="n">render</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Decorate it</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Applying decorators...&quot;</span><span class="p">)</span>
+<span class="n">decorated1</span> <span class="o">=</span> <span class="n">AsteriskDecorator</span><span class="p">(</span><span class="n">plain</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Decorated 1: </span><span class="si">{</span><span class="n">decorated1</span><span class="o">.</span><span class="n">render</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Decorate it further (stacking)</span>
+<span class="n">decorated2</span> <span class="o">=</span> <span class="n">ExclamationDecorator</span><span class="p">(</span><span class="n">decorated1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Decorated 2: </span><span class="si">{</span><span class="n">decorated2</span><span class="o">.</span><span class="n">render</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Another combination</span>
+<span class="n">decorated3</span> <span class="o">=</span> <span class="n">UpperCaseDecorator</span><span class="p">(</span><span class="n">ExclamationDecorator</span><span class="p">(</span><span class="n">AsteriskDecorator</span><span class="p">(</span><span class="n">plain</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Decorated 3: </span><span class="si">{</span><span class="n">decorated3</span><span class="o">.</span><span class="n">render</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># Original: Hello, World</span>
+<span class="c1">#</span>
+<span class="c1"># Applying decorators...</span>
+<span class="c1"># Wrapping with AsteriskDecorator</span>
+<span class="c1"># AsteriskDecorator: Adding asterisks to &#39;Hello, World&#39;</span>
+<span class="c1"># Decorated 1: *** Hello, World ***</span>
+<span class="c1">#</span>
+<span class="c1"># Wrapping with ExclamationDecorator</span>
+<span class="c1"># AsteriskDecorator: Adding asterisks to &#39;Hello, World&#39;</span>
+<span class="c1"># ExclamationDecorator: Adding exclamation marks to &#39;*** Hello, World ***&#39;</span>
+<span class="c1"># Decorated 2: *** Hello, World *** !!!</span>
+<span class="c1">#</span>
+<span class="c1"># Wrapping with AsteriskDecorator</span>
+<span class="c1"># Wrapping with ExclamationDecorator</span>
+<span class="c1"># Wrapping with UpperCaseDecorator</span>
+<span class="c1"># AsteriskDecorator: Adding asterisks to &#39;Hello, World&#39;</span>
+<span class="c1"># ExclamationDecorator: Adding exclamation marks to &#39;*** Hello, World ***&#39;</span>
+<span class="c1"># UpperCaseDecorator: Uppercasing &#39;*** Hello, World *** !!!&#39;</span>
+<span class="c1"># Decorated 3: *** HELLO, WORLD *** !!!</span>
+</code></pre></div>
+
+<p><em>Explanation:</em> <code>PlainText</code> is the concrete component. <code>TextDecorator</code> is the base decorator, holding a reference (<code>_wrapped_component</code>) to the component it wraps. <code>AsteriskDecorator</code>, <code>ExclamationDecorator</code>, and <code>UpperCaseDecorator</code> are concrete decorators. They call the <code>render</code> method of their wrapped component and then add their own modification. Notice how decorators can be stacked (<code>decorated3</code>). The client interacts with the outermost decorator via the <code>TextComponent</code> interface.</p>
+<p><em>Note:</em> Python's built-in <code>@decorator</code> syntax is related but distinct. It's syntactic sugar primarily for modifying functions or methods, often used for concerns like logging, access control, or memoization. The Decorator <em>design pattern</em> is a broader concept for adding responsibilities to <em>objects</em> dynamically using wrapper classes, as shown above.</p>
+<h3>Pros</h3>
+<ul>
+<li><strong>Flexibility:</strong> Add or remove responsibilities from objects dynamically at runtime.</li>
+<li><strong>Avoids Feature-Laden Superclasses:</strong> Functionality is composed via small decorator objects instead of inheriting everything from a complex base class.</li>
+<li><strong>Composable:</strong> Decorators can be combined and stacked in various ways.</li>
+<li><strong>Single Responsibility Principle:</strong> Each decorator focuses on a single added responsibility.</li>
+<li><strong>Open/Closed Principle:</strong> You can introduce new decorators without modifying existing component or decorator classes.</li>
+</ul>
+<h3>Cons</h3>
+<ul>
+<li><strong>Many Small Objects:</strong> Can result in a system with many small, similar-looking decorator objects.</li>
+<li><strong>Debugging Complexity:</strong> Tracing behavior through multiple layers of decorators can sometimes be challenging.</li>
+<li><strong>Order Dependency:</strong> The order in which decorators are applied can matter.</li>
+</ul>
+<h3>When to Use</h3>
+<ul>
+<li>When you want to add responsibilities to individual objects dynamically and transparently (without affecting other objects).</li>
+<li>When extension by subclassing is impractical due to the number of independent extensions or potential combinations.</li>
+<li>When a class definition might be hidden or otherwise unavailable for subclassing.</li>
+</ul>
+<hr>
+<p><strong>Next:</strong> <a href="./facade.html">Facade Pattern</a> <em>(Link TBD)</em></p>
+        </div>
+    </article>
+        </main>
+        
+    </div>
+
+<footer class="bg-gray-200 text-gray-700 p-4 mt-8">
+    <div class="container mx-auto text-center">
+        <p>&copy; Design Patterns in Python <span id="current-year"></span>. Powered by <a href="https://getpelican.com/" class="underline hover:text-gray-900">Pelican</a>.</p>
+    </div>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</footer>
+</body>
+</html>

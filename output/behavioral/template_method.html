@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Template Method Pattern - Design Patterns in Python</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script> <!-- Add Typography plugin -->
+    <link rel="stylesheet" href="../theme/css/main.css" />
+    <link rel="stylesheet" href="../theme/css/pygments.css" /> <!-- Add Pygments CSS -->
+</head>
+<body>
+<header class="bg-gray-800 text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">
+            <a href="../">Design Patterns in Python</a>
+        </h1>
+        <nav>
+            <ul class="flex space-x-4">
+                    <li><a href="/" class="hover:text-gray-300">Home</a></li>
+                    <li><a href="/about.html" class="hover:text-gray-300">About</a></li>
+                    <li><a href="/contact.html" class="hover:text-gray-300">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+    <div class="container mx-auto p-4 flex flex-col md:flex-row gap-6">
+        <main class="w-full ">
+    <article class="prose lg:prose-xl max-w-none">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold">Template Method Pattern</h1>
+        </header>
+        
+        <div class="entry-content">
+            <hr>
+<h2>Template Method Pattern</h2>
+<p><strong>Type:</strong> Behavioral</p>
+<h3>Intent</h3>
+<p>Define the skeleton of an algorithm in an operation, deferring some steps to subclasses. Template Method lets subclasses redefine certain steps without changing the algorithm's structure.</p>
+<h3>Problem</h3>
+<p>You have an algorithm with fixed steps and some of these steps need to vary across subclasses.</p>
+<h3>Solution</h3>
+<p>Implement a base class with a template method that calls abstract or hook methods. Subclasses override these methods for the variable steps.</p>
+<h3>Python Implementation Example</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+
+<span class="k">class</span> <span class="nc">AbstractClass</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">template_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_one</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_two</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hook</span><span class="p">()</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">step_one</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">step_two</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># optional override</span>
+        <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">ConcreteClass</span><span class="p">(</span><span class="n">AbstractClass</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">step_one</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Concrete step one&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">step_two</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Concrete step two&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<h3>Pros</h3>
+<ul>
+<li>Promotes code reuse in the invariant parts of an algorithm</li>
+<li>Enforces consistent algorithm structure</li>
+</ul>
+<h3>Cons</h3>
+<ul>
+<li>Can limit subclass flexibility</li>
+</ul>
+<h3>When to Use</h3>
+<ul>
+<li>When you have clear invariant and variant parts in an algorithm</li>
+<li>When you want to avoid code duplication across subclasses</li>
+</ul>
+<hr>
+<p><strong>Next:</strong> <a href="./chain_of_responsibility.html">Chain of Responsibility Pattern</a> <em>(Link TBD)</em></p>
+        </div>
+    </article>
+        </main>
+        
+    </div>
+
+<footer class="bg-gray-200 text-gray-700 p-4 mt-8">
+    <div class="container mx-auto text-center">
+        <p>&copy; Design Patterns in Python <span id="current-year"></span>. Powered by <a href="https://getpelican.com/" class="underline hover:text-gray-900">Pelican</a>.</p>
+    </div>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</footer>
+</body>
+</html>

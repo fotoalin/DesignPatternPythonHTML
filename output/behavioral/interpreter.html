@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interpreter Pattern - Design Patterns in Python</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script> <!-- Add Typography plugin -->
+    <link rel="stylesheet" href="../theme/css/main.css" />
+    <link rel="stylesheet" href="../theme/css/pygments.css" /> <!-- Add Pygments CSS -->
+</head>
+<body>
+<header class="bg-gray-800 text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">
+            <a href="../">Design Patterns in Python</a>
+        </h1>
+        <nav>
+            <ul class="flex space-x-4">
+                    <li><a href="/" class="hover:text-gray-300">Home</a></li>
+                    <li><a href="/about.html" class="hover:text-gray-300">About</a></li>
+                    <li><a href="/contact.html" class="hover:text-gray-300">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+    <div class="container mx-auto p-4 flex flex-col md:flex-row gap-6">
+        <main class="w-full ">
+    <article class="prose lg:prose-xl max-w-none">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold">Interpreter Pattern</h1>
+        </header>
+        
+        <div class="entry-content">
+            <hr>
+<h2>Interpreter Pattern</h2>
+<p><strong>Type:</strong> Behavioral</p>
+<h3>Intent</h3>
+<p>Define a representation for a grammar of a language, and an interpreter that uses this representation to interpret sentences in the language.</p>
+<h3>Problem</h3>
+<p>You need to parse or evaluate sentences in a language, and you want a flexible way to represent grammar rules and evaluation logic.</p>
+<h3>Solution</h3>
+<p>Define an AbstractExpression interface with an interpret(context) method. Implement terminal and non-terminal expressions for grammar rules. Build a syntax tree and interpret it by calling interpret on the root.</p>
+<h3>Python Implementation Example</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+
+<span class="k">class</span> <span class="nc">Expression</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">interpret</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">Number</span><span class="p">(</span><span class="n">Expression</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">interpret</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+
+<span class="k">class</span> <span class="nc">Add</span><span class="p">(</span><span class="n">Expression</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">:</span> <span class="n">Expression</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="n">Expression</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">left</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">right</span>
+
+    <span class="k">def</span> <span class="nf">interpret</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">left</span><span class="o">.</span><span class="n">interpret</span><span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">right</span><span class="o">.</span><span class="n">interpret</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+<span class="c1"># Client code</span>
+<span class="n">context</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">expression</span> <span class="o">=</span> <span class="n">Add</span><span class="p">(</span><span class="n">Number</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">Add</span><span class="p">(</span><span class="n">Number</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">Number</span><span class="p">(</span><span class="mi">4</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">expression</span><span class="o">.</span><span class="n">interpret</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>  <span class="c1"># Output: 9</span>
+</code></pre></div>
+
+<h3>Pros</h3>
+<ul>
+<li>Simplifies design of interpreters for simple languages</li>
+<li>Easy to extend grammar by adding new expression classes</li>
+</ul>
+<h3>Cons</h3>
+<ul>
+<li>Can lead to many classes for complex grammars</li>
+<li>Parsing and syntax tree construction may require extra code</li>
+</ul>
+<h3>When to Use</h3>
+<ul>
+<li>When you need to implement a simple grammar or DSL</li>
+<li>When grammar rules change frequently</li>
+</ul>
+<hr>
+<p><strong>Next:</strong> (end of series)</p>
+        </div>
+    </article>
+        </main>
+        
+    </div>
+
+<footer class="bg-gray-200 text-gray-700 p-4 mt-8">
+    <div class="container mx-auto text-center">
+        <p>&copy; Design Patterns in Python <span id="current-year"></span>. Powered by <a href="https://getpelican.com/" class="underline hover:text-gray-900">Pelican</a>.</p>
+    </div>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</footer>
+</body>
+</html>
