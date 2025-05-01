@@ -47,7 +47,7 @@ ARTICLE_SAVE_AS = '{date:%Y}/{slug}.html'
 ARTICLE_URL = '{date:%Y}/{slug}.html'
 PAGE_SAVE_AS = '{slug}.html'
 PAGE_URL = '{slug}.html'
-
+PAGE_PATHS = ['pages', 'projects']
 # Sidebar settings
 DISPLAY_CATEGORIES_ON_SIDEBAR = False
 # DISPLAY_TAGS_ON_SIDEBAR = True # Keep tags if desired

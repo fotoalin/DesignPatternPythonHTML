@@ -95,12 +95,19 @@ Theory is important, but the real learning happens when you apply design pattern
 #### ✅ Build Mini Projects:
 Apply patterns to real Django/Python code.
 
-##### 🧪 Examples:
+#### 🧪 Examples:
 - **Factory + Strategy**: build a payment system with multiple providers (Stripe, PayPal).
 - **Observer**: real-time notifications with WebSockets.
 - **Decorator**: custom middleware in Django.
 - **Command**: queue system with background tasks (Celery).
 - **State**: order status in an e-commerce app.
+
+#### 🧪 Example Projects:
+- [Payment Gateway Integration (Factory + Strategy)](projects/PaymentGatewayIntegration.html)
+- [Notification System (Observer)](projects/NotificationSystem.html)
+- [Custom Django Middleware (Decorator)](projects/CustomDjangoMiddleware.html)
+- [Background Task Queue (Command)](projects/BackgroundTaskQueue.html)
+- [Order Processing Workflow (State)](projects/OrderProcessingWorkflow.html)
 
 ---
 

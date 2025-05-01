@@ -19,25 +19,29 @@ The best way to solidify your understanding is to build small, focused projects 
 
 #### Project Ideas:
 
-1.  **Payment Gateway Integration (Factory + Strategy):**
+1.  [**Payment Gateway Integration (Factory + Strategy):**](projects/PaymentGatewayIntegration.html)
     *   **Goal:** Create a system that can process payments through different providers (e.g., Stripe, PayPal, Braintree).
     *   **Patterns:** Use a **Factory** to create payment processor objects and the **Strategy** pattern to switch between different processing algorithms (the specific logic for each provider).
 
-2.  **Notification System (Observer):**
+2.  [**Notification System (Observer):**](projects/NotificationSystem.html)
     *   **Goal:** Implement a system where users can subscribe to different types of events (e.g., new post, comment reply) and receive notifications (e.g., email, in-app, WebSocket push).
     *   **Pattern:** The **Observer** pattern is perfect for this. Subjects (event sources) notify Observers (notification handlers) when state changes.
 
-3.  **Custom Django Middleware (Decorator):**
+3.  [**Custom Django Middleware (Decorator):**](projects/CustomDjangoMiddleware.html)
     *   **Goal:** Add cross-cutting concerns like logging, timing, or access control to Django views without modifying the view code itself.
     *   **Pattern:** The **Decorator** pattern (conceptually similar to Python decorators, but can also be implemented with classes) allows you to wrap existing functionality with new behavior.
 
-4.  **Background Task Queue (Command):**
+4.  [**Background Task Queue (Command):**](projects/BackgroundTaskQueue.html)
     *   **Goal:** Design a system to handle tasks asynchronously (e.g., sending emails, generating reports) using a tool like Celery.
     *   **Pattern:** The **Command** pattern encapsulates a request as an object, allowing you to parameterize clients with different requests, queue requests, or log requests.
 
-5.  **Order Processing Workflow (State):**
+5.  [**Order Processing Workflow (State):**](projects/OrderProcessingWorkflow.html)
     *   **Goal:** Model the lifecycle of an order in an e-commerce application (e.g., Pending, Processing, Shipped, Delivered, Cancelled).
     *   **Pattern:** The **State** pattern allows an object to alter its behavior when its internal state changes. The object will appear to change its class.
+
+6.  [**User Authentication System (Facade):**](projects/UserAuthenticationSystem.html)
+    *   **Goal:** Create a simplified interface for user authentication that hides the complexity of different authentication methods (e.g., OAuth, JWT, session-based).
+    *   **Pattern:** The **Facade** pattern provides a unified interface to a set of interfaces in a subsystem, making it easier to use.
 
 ### Analyze Existing Code
 

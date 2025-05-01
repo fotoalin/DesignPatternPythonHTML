@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Authentication System (Facade Pattern) - Design Patterns in Python</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script> <!-- Add Typography plugin -->
+    <link rel="stylesheet" href="../theme/css/main.css" />
+    <link rel="stylesheet" href="../theme/css/pygments.css" /> <!-- Add Pygments CSS -->
+</head>
+<body>
+<header class="bg-gray-800 text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">
+            <a href="../">Design Patterns in Python</a>
+        </h1>
+        <nav>
+            <ul class="flex space-x-4">
+                    <li><a href="/" class="hover:text-gray-300">Home</a></li>
+                    <li><a href="/about.html" class="hover:text-gray-300">About</a></li>
+                    <li><a href="/contact.html" class="hover:text-gray-300">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+    <div class="container mx-auto p-4 flex flex-col md:flex-row gap-6">
+        <main class="w-full ">
+    <article class="prose lg:prose-xl max-w-none">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold">User Authentication System (Facade Pattern)</h1>
+        </header>
+        
+        <div class="entry-content">
+            <h2>Overview</h2>
+<p>This project demonstrates how to implement a user authentication system using the <strong>Facade design pattern</strong> in Python. The Facade pattern provides a simplified interface to a complex subsystem of classes, making the subsystem easier to use.</p>
+<p>In modern web applications, authentication involves several complex operations:
+- Password hashing and verification
+- Token generation and validation
+- Session management
+- Permission checking
+- Account locking for security
+- Two-factor authentication</p>
+<p>The Facade pattern helps us hide this complexity behind a clean, simple interface.</p>
+<h2>Problem</h2>
+<p>Without using a design pattern, authentication code often becomes:
+- <strong>Tightly coupled</strong> - Authentication logic scattered throughout the codebase
+- <strong>Hard to maintain</strong> - Changes to security requirements affect multiple places
+- <strong>Difficult to test</strong> - Complex dependencies make unit testing challenging
+- <strong>Inconsistent</strong> - Different parts of the app might implement security differently</p>
+<h2>Solution: The Facade Pattern</h2>
+<p>The Facade pattern solves these problems by:
+- Providing a <strong>unified interface</strong> to the authentication subsystem
+- <strong>Decoupling</strong> client code from authentication implementation details
+- Making the system <strong>easier to test</strong> through clear boundaries
+- Ensuring <strong>consistent security</strong> throughout the application</p>
+<h2>Implementation</h2>
+<h3>Structure</h3>
+<div class="highlight"><pre><span></span><code>auth_system/
+├── __init__.py
+├── facade.py            # Main Facade class
+├── password_handler.py  # Password hashing and verification
+├── token_service.py     # JWT token generation and validation
+├── user_store.py        # User data access layer
+├── session_manager.py   # Session tracking and management
+└── security_service.py  # Security features (account locking, 2FA)
+</code></pre></div>
+
+<h3>Code Example</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># facade.py</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">.password_handler</span> <span class="kn">import</span> <span class="n">PasswordHandler</span>
+<span class="kn">from</span> <span class="nn">.token_service</span> <span class="kn">import</span> <span class="n">TokenService</span>
+<span class="kn">from</span> <span class="nn">.user_store</span> <span class="kn">import</span> <span class="n">UserStore</span>
+<span class="kn">from</span> <span class="nn">.session_manager</span> <span class="kn">import</span> <span class="n">SessionManager</span>
+<span class="kn">from</span> <span class="nn">.security_service</span> <span class="kn">import</span> <span class="n">SecurityService</span>
+
+
+<span class="k">class</span> <span class="nc">AuthFacade</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Facade for the authentication subsystem.</span>
+<span class="sd">    Provides a simplified interface for client code.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password_handler</span> <span class="o">=</span> <span class="n">PasswordHandler</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token_service</span> <span class="o">=</span> <span class="n">TokenService</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_store</span> <span class="o">=</span> <span class="n">UserStore</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_manager</span> <span class="o">=</span> <span class="n">SessionManager</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">security_service</span> <span class="o">=</span> <span class="n">SecurityService</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">register_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register a new user&quot;&quot;&quot;</span>
+        <span class="c1"># Check if username already exists</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_store</span><span class="o">.</span><span class="n">get_user_by_username</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Username already exists&quot;</span><span class="p">}</span>
+
+        <span class="c1"># Hash the password</span>
+        <span class="n">password_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">password_handler</span><span class="o">.</span><span class="n">hash_password</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+
+        <span class="c1"># Store user in database</span>
+        <span class="n">user_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_store</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password_hash</span><span class="p">,</span> <span class="n">email</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ip_address</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Authenticate a user and return tokens if successful&quot;&quot;&quot;</span>
+        <span class="c1"># Check for too many failed attempts</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">security_service</span><span class="o">.</span><span class="n">is_account_locked</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Account is temporarily locked&quot;</span><span class="p">}</span>
+
+        <span class="c1"># Get user from database</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_store</span><span class="o">.</span><span class="n">get_user_by_username</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Invalid credentials&quot;</span><span class="p">}</span>
+
+        <span class="c1"># Verify password</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">password_handler</span><span class="o">.</span><span class="n">verify_password</span><span class="p">(</span><span class="n">password</span><span class="p">,</span> <span class="n">user</span><span class="p">[</span><span class="s2">&quot;password_hash&quot;</span><span class="p">]):</span>
+            <span class="c1"># Record failed attempt</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">security_service</span><span class="o">.</span><span class="n">record_failed_attempt</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">ip_address</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Invalid credentials&quot;</span><span class="p">}</span>
+
+        <span class="c1"># Clear any failed attempts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">security_service</span><span class="o">.</span><span class="n">clear_failed_attempts</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+
+        <span class="c1"># Create session</span>
+        <span class="n">session_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_manager</span><span class="o">.</span><span class="n">create_session</span><span class="p">(</span><span class="n">user</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">ip_address</span><span class="p">)</span>
+
+        <span class="c1"># Generate tokens</span>
+        <span class="n">access_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_service</span><span class="o">.</span><span class="n">generate_access_token</span><span class="p">(</span><span class="n">user</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span>
+        <span class="n">refresh_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_service</span><span class="o">.</span><span class="n">generate_refresh_token</span><span class="p">(</span><span class="n">user</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;access_token&quot;</span><span class="p">:</span> <span class="n">access_token</span><span class="p">,</span>
+            <span class="s2">&quot;refresh_token&quot;</span><span class="p">:</span> <span class="n">refresh_token</span><span class="p">,</span>
+            <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">user</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">user</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="n">user</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">logout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">session_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;End a user session&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_manager</span><span class="o">.</span><span class="n">end_session</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">session_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">verify_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Verify an access token and return user data if valid&quot;&quot;&quot;</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_service</span><span class="o">.</span><span class="n">validate_access_token</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">payload</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="n">user_id</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;user_id&quot;</span><span class="p">)</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_store</span><span class="o">.</span><span class="n">get_user_by_id</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">user</span>
+
+    <span class="k">def</span> <span class="nf">refresh_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">refresh_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate new tokens using a refresh token&quot;&quot;&quot;</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_service</span><span class="o">.</span><span class="n">validate_refresh_token</span><span class="p">(</span><span class="n">refresh_token</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">payload</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Invalid refresh token&quot;</span><span class="p">}</span>
+
+        <span class="n">user_id</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;user_id&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Generate new tokens</span>
+        <span class="n">access_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_service</span><span class="o">.</span><span class="n">generate_access_token</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="n">new_refresh_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_service</span><span class="o">.</span><span class="n">generate_refresh_token</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;access_token&quot;</span><span class="p">:</span> <span class="n">access_token</span><span class="p">,</span>
+            <span class="s2">&quot;refresh_token&quot;</span><span class="p">:</span> <span class="n">new_refresh_token</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">change_password</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">old_password</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_password</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Change a user&#39;s password&quot;&quot;&quot;</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_store</span><span class="o">.</span><span class="n">get_user_by_id</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;User not found&quot;</span><span class="p">}</span>
+
+        <span class="c1"># Verify old password</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">password_handler</span><span class="o">.</span><span class="n">verify_password</span><span class="p">(</span><span class="n">old_password</span><span class="p">,</span> <span class="n">user</span><span class="p">[</span><span class="s2">&quot;password_hash&quot;</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Current password is incorrect&quot;</span><span class="p">}</span>
+
+        <span class="c1"># Hash new password</span>
+        <span class="n">new_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">password_handler</span><span class="o">.</span><span class="n">hash_password</span><span class="p">(</span><span class="n">new_password</span><span class="p">)</span>
+
+        <span class="c1"># Update in database</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_store</span><span class="o">.</span><span class="n">update_password</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">new_hash</span><span class="p">)</span>
+
+        <span class="c1"># Invalidate all sessions (force re-login with new password)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_manager</span><span class="o">.</span><span class="n">invalidate_all_sessions</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+</code></pre></div>
+
+<h3>Client Usage Example</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Example usage in a Flask or Django view</span>
+<span class="kn">from</span> <span class="nn">auth_system.facade</span> <span class="kn">import</span> <span class="n">AuthFacade</span>
+
+<span class="n">auth</span> <span class="o">=</span> <span class="n">AuthFacade</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">register_view</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">)</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">)</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Simple, clean interface for client code</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">register_user</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">email</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Registration successful&quot;</span><span class="p">},</span> <span class="mi">201</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">]},</span> <span class="mi">400</span>
+
+<span class="k">def</span> <span class="nf">login_view</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">)</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">)</span>
+    <span class="n">ip_address</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">remote_addr</span>
+
+    <span class="c1"># Single method call handles all authentication complexity</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">ip_address</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="mi">200</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">]},</span> <span class="mi">401</span>
+</code></pre></div>
+
+<h2>Benefits of the Facade Pattern</h2>
+<ol>
+<li><strong>Simplifies client code</strong> - Client code doesn't need to know about subsystem complexity</li>
+<li><strong>Improves maintainability</strong> - Security implementation changes only affect the facade</li>
+<li><strong>Easier testing</strong> - Components can be tested in isolation</li>
+<li><strong>Better organization</strong> - Each security concern has its own dedicated component</li>
+<li><strong>Flexibility</strong> - Implementation details can change without affecting client code</li>
+</ol>
+<h2>When to Use the Facade Pattern</h2>
+<p>The Facade pattern is particularly useful when:</p>
+<ul>
+<li>You need to provide a simple interface to a complex subsystem</li>
+<li>You want to decouple your subsystem from clients and other subsystems</li>
+<li>You need to layer your subsystems (the facade acts as an entry point)</li>
+<li>You have a system with many interdependent classes that are difficult to understand</li>
+</ul>
+<h2>Related Patterns</h2>
+<ul>
+<li><strong>Adapter Pattern</strong>: Unlike Facade, Adapter makes existing interfaces work together</li>
+<li><strong>Proxy Pattern</strong>: While Facade simplifies, Proxy controls access to an object</li>
+<li><strong>Mediator Pattern</strong>: Similar to Facade but focuses on colleague objects communicating</li>
+</ul>
+<hr>
+<p><strong>(End of project series)</strong></p>
+<p><em>Previous:</em> <a href="OrderProcessingWorkflow.html">Order Processing Workflow (State Pattern)</a></p>
+<h2>Explore other resources</h2>
+<ul>
+<li><a href="https://refactoring.guru/design-patterns">Design Pattern on Refactoring Guru</a></li>
+<li><a href="https://python-patterns.guide/">Python Design Patterns guide</a></li>
+</ul>
+        </div>
+    </article>
+        </main>
+        
+    </div>
+
+<footer class="bg-gray-200 text-gray-700 p-4 mt-8">
+    <div class="container mx-auto text-center">
+
+
+        <p>
+            <strong>"Design Patterns in Python"</strong> started as a way for me to learn and to share what I’ve learned.
+        </p>
+        <p>
+            &copy; <span id="current-year"></span>
+            <a target="_blank" href="http://alin.morosanu.co.uk" class="underline hover:text-gray-900">Alin Morosanu</a>.
+            Powered by <a href="https://getpelican.com" target="_blank" class="underline hover:text-gray-900">Pelican</a>.
+        </p>
+
+    </div>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</footer>
+</body>
+</html>

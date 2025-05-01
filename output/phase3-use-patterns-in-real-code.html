@@ -40,38 +40,45 @@
 <h4>Project Ideas:</h4>
 <ol>
 <li>
-<p><strong>Payment Gateway Integration (Factory + Strategy):</strong></p>
+<p><a href="projects/PaymentGatewayIntegration.html"><strong>Payment Gateway Integration (Factory + Strategy):</strong></a></p>
 <ul>
 <li><strong>Goal:</strong> Create a system that can process payments through different providers (e.g., Stripe, PayPal, Braintree).</li>
 <li><strong>Patterns:</strong> Use a <strong>Factory</strong> to create payment processor objects and the <strong>Strategy</strong> pattern to switch between different processing algorithms (the specific logic for each provider).</li>
 </ul>
 </li>
 <li>
-<p><strong>Notification System (Observer):</strong></p>
+<p><a href="projects/NotificationSystem.html"><strong>Notification System (Observer):</strong></a></p>
 <ul>
 <li><strong>Goal:</strong> Implement a system where users can subscribe to different types of events (e.g., new post, comment reply) and receive notifications (e.g., email, in-app, WebSocket push).</li>
 <li><strong>Pattern:</strong> The <strong>Observer</strong> pattern is perfect for this. Subjects (event sources) notify Observers (notification handlers) when state changes.</li>
 </ul>
 </li>
 <li>
-<p><strong>Custom Django Middleware (Decorator):</strong></p>
+<p><a href="projects/CustomDjangoMiddleware.html"><strong>Custom Django Middleware (Decorator):</strong></a></p>
 <ul>
 <li><strong>Goal:</strong> Add cross-cutting concerns like logging, timing, or access control to Django views without modifying the view code itself.</li>
 <li><strong>Pattern:</strong> The <strong>Decorator</strong> pattern (conceptually similar to Python decorators, but can also be implemented with classes) allows you to wrap existing functionality with new behavior.</li>
 </ul>
 </li>
 <li>
-<p><strong>Background Task Queue (Command):</strong></p>
+<p><a href="projects/BackgroundTaskQueue.html"><strong>Background Task Queue (Command):</strong></a></p>
 <ul>
 <li><strong>Goal:</strong> Design a system to handle tasks asynchronously (e.g., sending emails, generating reports) using a tool like Celery.</li>
 <li><strong>Pattern:</strong> The <strong>Command</strong> pattern encapsulates a request as an object, allowing you to parameterize clients with different requests, queue requests, or log requests.</li>
 </ul>
 </li>
 <li>
-<p><strong>Order Processing Workflow (State):</strong></p>
+<p><a href="projects/OrderProcessingWorkflow.html"><strong>Order Processing Workflow (State):</strong></a></p>
 <ul>
 <li><strong>Goal:</strong> Model the lifecycle of an order in an e-commerce application (e.g., Pending, Processing, Shipped, Delivered, Cancelled).</li>
 <li><strong>Pattern:</strong> The <strong>State</strong> pattern allows an object to alter its behavior when its internal state changes. The object will appear to change its class.</li>
+</ul>
+</li>
+<li>
+<p><a href="projects/UserAuthenticationSystem.html"><strong>User Authentication System (Facade):</strong></a></p>
+<ul>
+<li><strong>Goal:</strong> Create a simplified interface for user authentication that hides the complexity of different authentication methods (e.g., OAuth, JWT, session-based).</li>
+<li><strong>Pattern:</strong> The <strong>Facade</strong> pattern provides a unified interface to a set of interfaces in a subsystem, making it easier to use.</li>
 </ul>
 </li>
 </ol>

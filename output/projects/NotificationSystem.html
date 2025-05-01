@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notification System - Design Patterns in Python</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script> <!-- Add Typography plugin -->
+    <link rel="stylesheet" href="../theme/css/main.css" />
+    <link rel="stylesheet" href="../theme/css/pygments.css" /> <!-- Add Pygments CSS -->
+</head>
+<body>
+<header class="bg-gray-800 text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">
+            <a href="../">Design Patterns in Python</a>
+        </h1>
+        <nav>
+            <ul class="flex space-x-4">
+                    <li><a href="/" class="hover:text-gray-300">Home</a></li>
+                    <li><a href="/about.html" class="hover:text-gray-300">About</a></li>
+                    <li><a href="/contact.html" class="hover:text-gray-300">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+    <div class="container mx-auto p-4 flex flex-col md:flex-row gap-6">
+        <main class="w-full ">
+    <article class="prose lg:prose-xl max-w-none">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold">Notification System</h1>
+        </header>
+        
+        <div class="entry-content">
+            <hr>
+<p><strong>Goal:</strong> Implement a real-time notification infrastructure for Django that can broadcast alerts to users via different channels (WebSocket, email, SMS).</p>
+<h2>📚 Patterns Used</h2>
+<ul>
+<li><strong>Observer Pattern:</strong> Register subscribers for notification events and notify them on state changes.</li>
+<li><strong>Strategy Pattern:</strong> Define multiple delivery strategies (WebSocket, email, SMS) and switch based on user preference.</li>
+</ul>
+<h2>🔧 Setup</h2>
+<ol>
+<li>Install Django Channels: <code>pip install channels</code></li>
+<li>Configure <code>ASGI_APPLICATION</code> and channel layers (e.g., Redis).</li>
+<li>Create a <code>notifications</code> app.</li>
+</ol>
+<h2>🛠️ Implementation Steps</h2>
+<ol>
+<li><strong>Define Notification Event</strong> (<code>notifications/events.py</code>):</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">NotificationEvent</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+</code></pre></div>
+
+<ol>
+<li><strong>Observer Manager</strong> (<code>notifications/manager.py</code>):</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">NotificationManager</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subscribers</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subscriber</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subscribers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subscriber</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subscribers</span><span class="p">:</span>
+            <span class="n">sub</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+</code></pre></div>
+
+<ol>
+<li><strong>Delivery Strategies</strong> (<code>notifications/strategies.py</code>):</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">WebSocketStrategy</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="c1"># send via Channels group_send</span>
+        <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">EmailStrategy</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="c1"># send email</span>
+        <span class="k">pass</span>
+</code></pre></div>
+
+<ol>
+<li><strong>Usage Example</strong> (<code>notifications/services.py</code>):</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="n">manager</span> <span class="o">=</span> <span class="n">NotificationManager</span><span class="p">()</span>
+<span class="n">manager</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">WebSocketStrategy</span><span class="p">())</span>
+<span class="n">manager</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">EmailStrategy</span><span class="p">())</span>
+
+<span class="c1"># On some action:</span>
+<span class="n">event</span> <span class="o">=</span> <span class="n">NotificationEvent</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s1">&#39;You have a new message&#39;</span><span class="p">)</span>
+<span class="n">manager</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+</code></pre></div>
+
+<h2>📁 Recommended File Structure</h2>
+<div class="highlight"><pre><span></span><code><span class="nx">notifications</span><span class="o">/</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">__init__</span><span class="p">.</span><span class="nx">py</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">events</span><span class="p">.</span><span class="nx">py</span><span class="w">         </span><span class="err">#</span><span class="w"> </span><span class="nx">notification</span><span class="w"> </span><span class="nx">event</span><span class="w"> </span><span class="nx">definitions</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">py</span><span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="nx">observer</span><span class="w"> </span><span class="nx">manager</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">strategies</span><span class="p">.</span><span class="nx">py</span><span class="w">     </span><span class="err">#</span><span class="w"> </span><span class="nx">delivery</span><span class="w"> </span><span class="nx">strategies</span>
+<span class="err">└──</span><span class="w"> </span><span class="nx">services</span><span class="p">.</span><span class="nx">py</span><span class="w">       </span><span class="err">#</span><span class="w"> </span><span class="nx">high</span><span class="o">-</span><span class="nx">level</span><span class="w"> </span><span class="nx">API</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">trigger</span><span class="w"> </span><span class="nx">notifications</span>
+</code></pre></div>
+
+<h2>✅ Testing</h2>
+<ul>
+<li>Use Django test client and Channels <code>Communicator</code> to simulate WebSocket.</li>
+<li>Mock email backend to verify email sends.</li>
+<li>Test manager.notify calls subscriber.update correctly.</li>
+</ul>
+<hr>
+<p><em>Previous:</em> <a href="PaymentGatewayIntegration.html">Payment Gateway Integration</a></p>
+<p><em>Next:</em> <a href="CustomDjangoMiddleware.html">Custom Django Middleware (Decorator)</a></p>
+        </div>
+    </article>
+        </main>
+        
+    </div>
+
+<footer class="bg-gray-200 text-gray-700 p-4 mt-8">
+    <div class="container mx-auto text-center">
+
+
+        <p>
+            <strong>"Design Patterns in Python"</strong> started as a way for me to learn and to share what I’ve learned.
+        </p>
+        <p>
+            &copy; <span id="current-year"></span>
+            <a target="_blank" href="http://alin.morosanu.co.uk" class="underline hover:text-gray-900">Alin Morosanu</a>.
+            Powered by <a href="https://getpelican.com" target="_blank" class="underline hover:text-gray-900">Pelican</a>.
+        </p>
+
+    </div>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</footer>
+</body>
+</html>
