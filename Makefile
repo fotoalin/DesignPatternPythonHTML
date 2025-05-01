@@ -8,10 +8,13 @@ OUTPUTDIR=$(BASEDIR)/output
 CONFFILE=$(BASEDIR)/pelicanconf.py
 PUBLISHCONF=$(BASEDIR)/publishconf.py
 
-SSH_HOST=alin.morosanu.co.uk
-SSH_PORT=2201
-SSH_USER=webdev
-SSH_TARGET_DIR=~/design_patterns
+
+SSH_HOST ?= $(shell echo $$SSH_HOST)
+SSH_PORT ?= $(shell echo $$SSH_PORT)
+SSH_USER ?= $(shell echo $$SSH_USER)
+SSH_TARGET_DIR ?= $(shell echo $$SSH_TARGET_DIR)
+
+
 
 GITHUB_PAGES_BRANCH=main
 GITHUB_PAGES_COMMIT_MESSAGE=Generate Pelican site
@@ -81,6 +84,7 @@ publish:
 	"$(PELICAN)" "$(INPUTDIR)" -o "$(OUTPUTDIR)" -s "$(PUBLISHCONF)" $(PELICANOPTS)
 
 ssh_upload: publish
+	@echo "Uploading to $(SSH_USER)@$(SSH_HOST):$(SSH_TARGET_DIR)"
 	scp -P $(SSH_PORT) -r "$(OUTPUTDIR)"/* "$(SSH_USER)@$(SSH_HOST):$(SSH_TARGET_DIR)"
 
 sftp_upload: publish

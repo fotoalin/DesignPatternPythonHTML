@@ -1,9 +1,10 @@
+import datetime
 import os
 import shlex
 import shutil
 import sys
-import datetime
 
+from decouple import config
 from invoke import task
 from invoke.main import program
 from pelican import main as pelican_main
@@ -23,16 +24,16 @@ CONFIG = {
     # Output path. Can be absolute or relative to tasks.py. Default: 'output'
     "deploy_path": SETTINGS["OUTPUT_PATH"],
     # Remote server configuration
-    "ssh_user": "webdev",
-    "ssh_host": "alin.morosanu.co.uk",
-    "ssh_port": "2201",
-    "ssh_path": "~/design_patterns",
+    "ssh_user": config("ssh_user"),
+    "ssh_host": config("ssh_host", cast="str"),
+    "ssh_port": config("ssh_port", cast="int"),
+    "ssh_path": config("ssh_path"),
     # Github Pages configuration
     "github_pages_branch": "main",
     "commit_message": f"'Publish site on {datetime.date.today().isoformat()}'",
     # Host and port for `serve`
     "host": "localhost",
-    "port": 8000,
+    "port": 8081,
 }
 
 

@@ -1,6 +1,6 @@
 AUTHOR = 'Alin Morosanu'
 SITENAME = 'Design Patterns in Python'
-SITEURL = ""
+SITE_URL = "http://design-patterns-python.morosanu.co.uk"
 THEME = 'mytheme'
 
 PATH = "content"
